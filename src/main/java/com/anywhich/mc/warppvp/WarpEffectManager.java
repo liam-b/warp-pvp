@@ -48,7 +48,7 @@ public class WarpEffectManager implements Listener {
 //    private static final int LEVITATION_SIGNIFICANT_LEVEL = 255;
 //    private static final int LEVITATION_MAXIMUM_LEVEL = 251;
 
-    private static final double WARP_DECAY_PER_TICK = 0.0045;
+    private static final double WARP_DECAY_PER_TICK = 0.005;
 
     private final WorldBorder worldBorder;
     private final Map<Player, Double> warpLevels = new HashMap<>();

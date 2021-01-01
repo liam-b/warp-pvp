@@ -4,6 +4,7 @@ import com.anywhich.mc.warppvp.ParticleHelper;
 import com.anywhich.mc.warppvp.WarpEffectManager;
 import com.destroystokyo.paper.event.player.PlayerLaunchProjectileEvent;
 import org.bukkit.*;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Snowball;
@@ -30,11 +31,9 @@ public class WarpGrenade extends Gear {
         ITEM.setItemMeta(grenadeMeta);
     }
 
-    private static final double RANGE_MAX = 1.3;
-    private static final double RANGE_MIN = 0.7;
-
-    private static final double WARP_LEVEL_MAX = 0.2;
-    private static final double WARP_LEVEL_MIN = 0.07;
+    private static final double RANGE = 1.3;
+    private static final double WARP_DIRECT_HIT = 0.10;
+    private static final double WARP_INDIRECT_HIT = 0.07;
 
     public WarpGrenade(WarpEffectManager warpEffectManager, Set<Player> players) {
         super(warpEffectManager, players, COUNT_MAX, ITEM, ITEM_SLOT, SUPPLY_MAX, SUPPLY_PERIOD);
@@ -56,21 +55,19 @@ public class WarpGrenade extends Gear {
     @EventHandler
     public void onProjectileHit(ProjectileHitEvent event) {
         Location hitLocation = event.getEntity().getLocation();
-        ParticleHelper.particleSphere(hitLocation, RANGE_MAX, 100, Color.fromRGB(60, 60, 60));
+        ParticleHelper.particleSphere(hitLocation, RANGE, 100, Color.fromRGB(60, 60, 60));
 
-        hitLocation.getNearbyPlayers(RANGE_MAX).forEach(player -> {
-            if (player != event.getEntity().getShooter()) {
-                Vector playerTorso = player.getLocation().toVector().midpoint(player.getEyeLocation().toVector());
-                double distanceToPlayer = hitLocation.toVector().distance(playerTorso);
-                double normalisedDistance = map(distanceToPlayer, RANGE_MIN, RANGE_MAX, 0, 1);
-                double warpLevel = map(1 - normalisedDistance, 0, 1, WARP_LEVEL_MIN, WARP_LEVEL_MAX);
-                warpEffectManager.increasePlayerWarpLevel(player, warpLevel);
+        if (event.getHitEntity() != null && event.getHitEntity() instanceof Player) {
+            Player hitPlayer = (Player) event.getHitEntity();
+            if (hitPlayer != event.getEntity().getShooter()) {
+                warpEffectManager.increasePlayerWarpLevel(hitPlayer, WARP_DIRECT_HIT);
             }
-        });
-    }
-
-    private double map(double number, double fromMin, double fromMax, double toMin, double toMax) {
-        double value = (number - fromMin) / (fromMax - fromMin) * (toMax - toMin) + toMin;
-        return Math.max(toMin, Math.min(value, toMax));
+        } else {
+            hitLocation.getNearbyPlayers(RANGE).forEach(player -> {
+                if (player != event.getEntity().getShooter()) {
+                    warpEffectManager.increasePlayerWarpLevel(player, WARP_INDIRECT_HIT);
+                }
+            });
+        }
     }
 }
