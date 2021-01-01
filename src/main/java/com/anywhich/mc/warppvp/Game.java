@@ -33,24 +33,14 @@ public class Game {
         scoreboardManager = new ScoreboardManager(this.playerData.keySet());
 
         this.playerData.keySet().forEach(player -> {
-            player.setGameMode(GameMode.ADVENTURE);
-            player.setHealth(20);
-            player.setFoodLevel(20);
-            player.setSaturation(0);
-            player.getInventory().clear();
+            resetPlayer(player);
             equipmentManager.supplyEquipment(player);
         });
         playerManager.randomlySpreadPlayers();
     }
 
     public void destroy() {
-        playerData.keySet().forEach(player -> {
-            player.setGameMode(GameMode.ADVENTURE);
-            player.setHealth(20);
-            player.setFoodLevel(20);
-            player.setSaturation(0);
-            player.getInventory().clear();
-        });
+        playerData.keySet().forEach(this::resetPlayer);
 
         warpEffectManager.destroy();
         gearManager.destroy();
@@ -59,5 +49,14 @@ public class Game {
         equipmentManager.destroy();
         playerManager.destroy();
         scoreboardManager.destroy();
+    }
+
+    private void resetPlayer(Player player) {
+        player.setGameMode(GameMode.ADVENTURE);
+        player.setHealth(20);
+        player.setFoodLevel(20);
+        player.setSaturation(0);
+        player.getInventory().clear();
+        player.getActivePotionEffects().forEach(effect -> player.removePotionEffect(effect.getType()));
     }
 }

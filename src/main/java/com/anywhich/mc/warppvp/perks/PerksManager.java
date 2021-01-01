@@ -15,6 +15,7 @@ public class PerksManager {
 
         perks = new Perk[] {
                 new MartyrdomPerk(this),
+                new VampirePerk(this, playerData),
         };
     }
 
