@@ -1,8 +1,8 @@
 package com.anywhich.mc.warppvp;
 
 import com.anywhich.mc.warppvp.gear.GearManager;
-import com.anywhich.mc.warppvp.abilities.Abilities;
-import com.anywhich.mc.warppvp.abilities.AbilityManager;
+import com.anywhich.mc.warppvp.abilities.AbilitiesManager;
+import com.anywhich.mc.warppvp.perks.PerksManager;
 import com.anywhich.mc.warppvp.playerdata.PlayerData;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
@@ -12,8 +12,9 @@ import java.util.stream.Collectors;
 
 public class Game {
     public final WarpEffectManager warpEffectManager;
-    public final AbilityManager abilityManager;
     public final GearManager gearManager;
+    public final AbilitiesManager abilitiesManager;
+    public final PerksManager perksManager;
     public final EquipmentManager equipmentManager;
     public final PlayerManager playerManager;
     public final ScoreboardManager scoreboardManager;
@@ -24,8 +25,9 @@ public class Game {
         this.playerData = playerData.entrySet().stream().filter(entry -> entry.getValue().isEligibleToPlay()).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
         warpEffectManager = new WarpEffectManager(this.playerData, world);
-        abilityManager = new AbilityManager(warpEffectManager, this.playerData);
         gearManager = new GearManager(warpEffectManager, this.playerData);
+        abilitiesManager = new AbilitiesManager(warpEffectManager, this.playerData);
+        perksManager = new PerksManager(this.playerData);
         equipmentManager = new EquipmentManager(this.playerData, gearManager);
         playerManager = new PlayerManager(this.playerData, world, config);
         scoreboardManager = new ScoreboardManager(this.playerData.keySet());
@@ -51,8 +53,9 @@ public class Game {
         });
 
         warpEffectManager.destroy();
-        abilityManager.destroy();
         gearManager.destroy();
+        abilitiesManager.destroy();
+        perksManager.destroy();
         equipmentManager.destroy();
         playerManager.destroy();
         scoreboardManager.destroy();
