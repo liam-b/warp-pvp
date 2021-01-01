@@ -13,7 +13,7 @@ import java.util.Map;
 
 public class VampirePerk extends Perk {
     public static final Perks NAME = Perks.VAMPIRE;
-    private static final PotionEffect healthEffect = new PotionEffect(PotionEffectType.ABSORPTION, Integer.MAX_VALUE, 0, false, false, false);
+    public static final int EXTRA_HEARTS = 5;
 
     private final Map<Player, PlayerData> playerData;
 
@@ -25,9 +25,8 @@ public class VampirePerk extends Perk {
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent event) {
         Player killer = event.getEntity().getKiller();
-        if (killer != null && playerData.containsKey(event.getEntity()) && playerData.containsKey(killer) && event.getEntity() != killer) {
-            killer.removePotionEffect(healthEffect.getType());
-            killer.addPotionEffect(healthEffect);
+        if (killer != null && playerData.containsKey(event.getEntity()) && event.getEntity() != killer && perksManager.hasPlayerSelectedPerk(killer, NAME)) {
+            killer.setAbsorptionAmount(EXTRA_HEARTS);
         }
     }
 }

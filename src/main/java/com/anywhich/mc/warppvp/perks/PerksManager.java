@@ -16,6 +16,7 @@ public class PerksManager {
         perks = new Perk[] {
                 new MartyrdomPerk(this),
                 new VampirePerk(this, playerData),
+                new HotStreakPerk(this, playerData),
         };
     }
 
@@ -26,6 +27,6 @@ public class PerksManager {
     }
 
     public boolean hasPlayerSelectedPerk(Player player, Perks perkName) {
-        return playerData.get(player).selectedPerk == perkName;
+        return playerData.containsKey(player) && playerData.get(player).selectedPerk == perkName;
     }
 }

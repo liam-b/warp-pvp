@@ -1,7 +1,7 @@
 package com.anywhich.mc.warppvp.abilities;
 
 import com.anywhich.mc.warppvp.WarpPvp;
-import com.anywhich.mc.warppvp.perks.Perks;
+import com.anywhich.mc.warppvp.perks.*;
 import com.anywhich.mc.warppvp.playerdata.PlayerData;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -213,20 +213,20 @@ class PerkMenuItems {
                 break;
             case VAMPIRE:
                 material = Material.MUTTON;
-                lore.add("Gain 5 hearts after a kill instead of 3.");
+                lore.add("Gain " + Math.round(VampirePerk.EXTRA_HEARTS + 6) / 2.0 + " hearts after a kill instead of 3.");
                 break;
             case HOT_STREAK:
                 material = Material.LAVA_BUCKET;
-                lore.add("Gain a level of strength every 2 kills in a row.");
+                lore.add("Gain a level of strength every " + HotStreakPerk.STREAK_PER_LEVEL);
+                lore.add("kills in a row.");
                 break;
             case UTILITY_EXPERT:
                 material = Material.IRON_AXE;
-                lore.add("Ability cooldown is reduced by 5");
-                lore.add("seconds after a kill.");
+                lore.add("Collect gear items " + Math.round(UtilityExpertPerk.GEAR_INTERVAL_MULTIPLIER * 100) + "% faster.");
                 break;
             case WARP_SPECIALIST:
                 material = Material.END_CRYSTAL;
-                lore.add("Warp is limited to a maximum of 60%.");
+                lore.add("Warp decays " + Math.round((WarpSpecialistPerk.WARP_DECAY_MULTIPLIER - 1) * 100) + "% faster than usual.");
                 break;
         }
 

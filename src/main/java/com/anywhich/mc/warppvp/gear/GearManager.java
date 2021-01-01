@@ -29,8 +29,8 @@ public class GearManager implements Listener {
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
 
         gear = new Gear[] {
-                new WarpGrenade(warpEffectManager, playerData.keySet()),
-                new ThrowableTnt(warpEffectManager, playerData.keySet())
+                new WarpGrenade(warpEffectManager, playerData),
+                new ThrowableTnt(warpEffectManager, playerData)
         };
     }
 

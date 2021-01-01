@@ -1,5 +1,8 @@
 package com.anywhich.mc.warppvp;
 
+import com.anywhich.mc.warppvp.gear.WarpGrenade;
+import com.anywhich.mc.warppvp.perks.Perks;
+import com.anywhich.mc.warppvp.perks.WarpSpecialistPerk;
 import com.anywhich.mc.warppvp.playerdata.PlayerData;
 import com.destroystokyo.paper.event.entity.EntityKnockbackByEntityEvent;
 import com.destroystokyo.paper.event.player.PlayerJumpEvent;
@@ -19,6 +22,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -50,6 +54,7 @@ public class WarpEffectManager implements Listener {
 
     private static final double WARP_DECAY_PER_TICK = 0.005;
 
+    private final Map<Player, PlayerData> playerData;
     private final WorldBorder worldBorder;
     private final Map<Player, Double> warpLevels = new HashMap<>();
     private final Map<Player, BossBar> warpBars = new HashMap<>();
@@ -57,6 +62,8 @@ public class WarpEffectManager implements Listener {
     private final int onTickTaskId;
 
     public WarpEffectManager(Map<Player, PlayerData> playerData, World world) {
+        this.playerData = playerData;
+
         worldBorder = world.getWorldBorder();
         playerData.keySet().forEach(player -> {
             warpLevels.put(player, 0.0);
@@ -112,7 +119,9 @@ public class WarpEffectManager implements Listener {
 //            }
 //            player.sendActionBar(String.valueOf(effectAmplifier));
 
-            warpLevels.put(player, Math.max(0, warpLevel - WARP_DECAY_PER_TICK));
+            double warpDecay = WARP_DECAY_PER_TICK;
+            if (playerData.containsKey(player) && playerData.get(player).selectedPerk == Perks.WARP_SPECIALIST) warpDecay *= WarpSpecialistPerk.WARP_DECAY_MULTIPLIER;
+            warpLevels.put(player, Math.max(0, warpLevel - warpDecay));
         });
     }
 
@@ -132,6 +141,14 @@ public class WarpEffectManager implements Listener {
             double jumpVelocity = map(warpLevels.get(player), JUMP_RESTRICTION_THRESHOLD, 1, JUMP_RESTRICTION_MIN_VELOCITY, JUMP_RESTRICTION_MAX_VELOCITY);
             player.setVelocity(player.getVelocity().setY(-jumpVelocity));
             hasJumped.remove(player);
+        }
+    }
+
+    @EventHandler
+    public void onPlayerRespawn(PlayerRespawnEvent event) {
+        Player player = event.getPlayer();
+        if (playerData.containsKey(player)) {
+            warpLevels.put(player, 0.0);
         }
     }
 

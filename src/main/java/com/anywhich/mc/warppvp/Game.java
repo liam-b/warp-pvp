@@ -22,7 +22,7 @@ public class Game {
     public final Map<Player, PlayerData> playerData;
 
     public Game(WarpPvpConfig config, Map<Player, PlayerData> playerData, World world) {
-        this.playerData = playerData.entrySet().stream().filter(entry -> entry.getValue().isEligibleToPlay()).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        this.playerData = playerData.entrySet().stream().filter(entry -> !entry.getKey().isDead() && entry.getValue().isEligibleToPlay()).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
         warpEffectManager = new WarpEffectManager(this.playerData, world);
         gearManager = new GearManager(warpEffectManager, this.playerData);
@@ -58,5 +58,6 @@ public class Game {
         player.setSaturation(0);
         player.getInventory().clear();
         player.getActivePotionEffects().forEach(effect -> player.removePotionEffect(effect.getType()));
+        player.setAbsorptionAmount(0);
     }
 }

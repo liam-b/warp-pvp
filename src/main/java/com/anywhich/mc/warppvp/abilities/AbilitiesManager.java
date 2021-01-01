@@ -44,7 +44,7 @@ public class AbilitiesManager {
     }
 
     public boolean hasPlayerSelectedAbility(Player player, Abilities ability) {
-        return playerData.get(player).selectedAbility == ability;
+        return playerData.containsKey(player) && playerData.get(player).selectedAbility == ability;
     }
 
     public boolean isPlayerAbilityReady(Player player) {

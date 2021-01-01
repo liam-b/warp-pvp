@@ -34,14 +34,14 @@ public final class WarpPvp extends JavaPlugin implements Listener {
         Command mainCommand = new Command("warp");
 
         mainCommand.addSubCommand("start").addUsage(new Class<?>[]{}, (CommandSender sender, List<Object> args) -> {
-            Bukkit.broadcastMessage(ChatColor.GOLD + "[Starting warp pvp game]");
+            Bukkit.broadcastMessage("[Starting warp pvp game]");
             if (game != null) game.destroy();
             game = new Game(config, new HashMap<>(playerData), getServer().getWorld("world"));
         });
 
         mainCommand.addSubCommand("stop").addUsage(new Class<?>[]{}, (CommandSender sender, List<Object> args) -> {
             if (game != null) {
-                Bukkit.broadcastMessage(ChatColor.GOLD + "[Stopped warp pvp game]");
+                Bukkit.broadcastMessage("[Stopped warp pvp game]");
                 game.destroy();
                 game = null;
             } else sender.sendMessage("No game to stop");
