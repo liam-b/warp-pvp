@@ -1,6 +1,7 @@
 package com.anywhich.mc.warppvp.gear;
 
 import com.anywhich.mc.warppvp.WarpEffectManager;
+import com.anywhich.mc.warppvp.playerdata.PlayerData;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
@@ -17,6 +18,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public class ThrowableTnt extends Gear {
@@ -33,8 +35,8 @@ public class ThrowableTnt extends Gear {
 
     private final List<TNTPrimed> tntEntities = new ArrayList<>();
 
-    public ThrowableTnt(WarpEffectManager warpEffectManager, Set<Player> players) {
-        super(warpEffectManager, players, COUNT_MAX, ITEM, ITEM_SLOT, SUPPLY_MAX, SUPPLY_PERIOD);
+    public ThrowableTnt(WarpEffectManager warpEffectManager, Map<Player, PlayerData> playerData) {
+        super(warpEffectManager, playerData, COUNT_MAX, ITEM, ITEM_SLOT, SUPPLY_MAX, SUPPLY_PERIOD);
     }
 
     @EventHandler

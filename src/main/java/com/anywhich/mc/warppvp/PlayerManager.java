@@ -4,6 +4,7 @@ import com.anywhich.mc.warppvp.gear.Gear;
 import com.anywhich.mc.warppvp.playerdata.PlayerData;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -24,7 +25,7 @@ import java.util.stream.Collectors;
 
 public class PlayerManager implements Listener {
     private static final int REGEN_INTERVAL = 40;
-    private static final PotionEffect KILL_REGEN_POTION = new PotionEffect(PotionEffectType.REGENERATION, 80, 3, false, false, true);
+    private static final PotionEffect KILL_REGEN_POTION = new PotionEffect(PotionEffectType.REGENERATION, 60, 2, false, false, true);
 
     private final int regenTaskId;
     private final Map<Player, PlayerData> playerData;
@@ -66,7 +67,7 @@ public class PlayerManager implements Listener {
 
     @EventHandler
     public void onEntityRegainHealth(EntityRegainHealthEvent event) {
-        if (event.getEntityType() == EntityType.PLAYER) event.setCancelled(true);
+        if (event.getEntityType() == EntityType.PLAYER && event.getRegainReason() == EntityRegainHealthEvent.RegainReason.SATIATED) event.setCancelled(true);
     }
 
     @EventHandler
@@ -74,6 +75,7 @@ public class PlayerManager implements Listener {
         Player killer = event.getEntity().getKiller();
         if (killer != null && playerData.containsKey(event.getEntity()) && playerData.containsKey(killer) && event.getEntity() != killer) {
             killer.addPotionEffect(KILL_REGEN_POTION);
+            killer.playSound(killer.getLocation(), Sound.BLOCK_ANVIL_LAND, 0.8f, 1);
         }
     }
 
