@@ -2,6 +2,7 @@ package com.anywhich.mc.warppvp.gear;
 
 import com.anywhich.mc.warppvp.ParticleHelper;
 import com.anywhich.mc.warppvp.WarpEffectManager;
+import com.anywhich.mc.warppvp.playerdata.PlayerData;
 import com.destroystokyo.paper.event.player.PlayerLaunchProjectileEvent;
 import org.bukkit.*;
 import org.bukkit.entity.Entity;
@@ -15,6 +16,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.util.Vector;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public class WarpGrenade extends Gear {
@@ -32,11 +34,11 @@ public class WarpGrenade extends Gear {
     }
 
     private static final double RANGE = 1.3;
-    private static final double WARP_DIRECT_HIT = 0.10;
-    private static final double WARP_INDIRECT_HIT = 0.07;
+    private static final double WARP_DIRECT_HIT = 0.09;
+    private static final double WARP_INDIRECT_HIT = 0.06;
 
-    public WarpGrenade(WarpEffectManager warpEffectManager, Set<Player> players) {
-        super(warpEffectManager, players, COUNT_MAX, ITEM, ITEM_SLOT, SUPPLY_MAX, SUPPLY_PERIOD);
+    public WarpGrenade(WarpEffectManager warpEffectManager, Map<Player, PlayerData> playerData) {
+        super(warpEffectManager, playerData, COUNT_MAX, ITEM, ITEM_SLOT, SUPPLY_MAX, SUPPLY_PERIOD);
     }
 
     @EventHandler
