@@ -12,7 +12,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class HopAbility extends Ability {
-    public static final Abilities ABILITY = Abilities.HOP;
+    public static final Abilities NAME = Abilities.HOP;
     public static final int COOLDOWN = 20 * 7;
 
     public static final double RANGE = 2.8;
@@ -27,8 +27,8 @@ public class HopAbility extends Ability {
 
     private final Set<Player> hoppingPlayers = new HashSet<>();
 
-    public HopAbility(AbilityManager abilityManager, WarpEffectManager warpEffectManager) {
-        super(abilityManager, warpEffectManager, ABILITY, COOLDOWN);
+    public HopAbility(AbilitiesManager abilitiesManager, WarpEffectManager warpEffectManager) {
+        super(abilitiesManager, warpEffectManager, NAME, COOLDOWN);
     }
 
     protected void onUse(Player player) {

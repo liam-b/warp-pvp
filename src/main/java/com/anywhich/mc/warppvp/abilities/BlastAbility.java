@@ -7,7 +7,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 public class BlastAbility extends Ability {
-    public static final Abilities ABILITY = Abilities.BLAST;
+    public static final Abilities NAME = Abilities.BLAST;
     public static final int COOLDOWN = 20 * 10;
 
     public static final double RANGE = 4.1;
@@ -22,8 +22,8 @@ public class BlastAbility extends Ability {
 
 //    private final Set<Player> pendingWarpOnLanding = new HashSet<>();
 
-    public BlastAbility(AbilityManager abilityManager, WarpEffectManager warpEffectManager) {
-        super(abilityManager, warpEffectManager, ABILITY, COOLDOWN);
+    public BlastAbility(AbilitiesManager abilitiesManager, WarpEffectManager warpEffectManager) {
+        super(abilitiesManager, warpEffectManager, NAME, COOLDOWN);
     }
 
     protected void onUse(Player player) {

@@ -10,13 +10,13 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.util.HashMap;
 import java.util.Map;
 
-public class AbilityManager {
+public class AbilitiesManager {
     private final Map<Player, PlayerData> playerData;
     private final Map<Player, AbilityCooldown> playerCooldowns = new HashMap<>();
     private final Map<Abilities, Ability> abilities = new HashMap<>();
     private final int onTickTaskId;
 
-    public AbilityManager(WarpEffectManager warpEffectManager, Map<Player, PlayerData> playerData) {
+    public AbilitiesManager(WarpEffectManager warpEffectManager, Map<Player, PlayerData> playerData) {
         WarpPvp plugin = JavaPlugin.getPlugin(WarpPvp.class);
         onTickTaskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, this::onTick, 0, 1);
 
@@ -26,7 +26,7 @@ public class AbilityManager {
         abilities.put(Abilities.BLAST, new BlastAbility(this, warpEffectManager));
 
         this.playerData = playerData;
-        playerData.forEach((player, data) -> resetPlayerCooldown(player, abilities.get(data.selectedAbility).COOLDOWN));
+        playerData.forEach((player, data) -> resetPlayerCooldown(player, abilities.get(data.selectedAbility).cooldown));
     }
 
     public void destroy() {

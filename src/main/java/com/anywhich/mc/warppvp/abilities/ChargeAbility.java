@@ -14,7 +14,7 @@ import org.bukkit.util.Vector;
 import java.util.*;
 
 public class ChargeAbility extends Ability {
-    public static final Abilities ABILITY = Abilities.CHARGE;
+    public static final Abilities NAME = Abilities.CHARGE;
     public static final int COOLDOWN = 20 * 6;
 
     public static final double CHARGE_SPEED = 0.5;
@@ -35,8 +35,8 @@ public class ChargeAbility extends Ability {
     private final Map<LivingEntity, Integer> chargeHitCooldown = new HashMap<>();
     private final Random random = new Random();
 
-    public ChargeAbility(AbilityManager abilityManager, WarpEffectManager warpEffectManager) {
-        super(abilityManager, warpEffectManager, ABILITY, COOLDOWN);
+    public ChargeAbility(AbilitiesManager abilitiesManager, WarpEffectManager warpEffectManager) {
+        super(abilitiesManager, warpEffectManager, NAME, COOLDOWN);
         WarpPvp plugin = JavaPlugin.getPlugin(WarpPvp.class);
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }

@@ -21,9 +21,9 @@ import java.util.Map;
 public final class WarpPvp extends JavaPlugin implements Listener {
     public final WarpPvpConfig config = new WarpPvpConfig(this);
 
-    private Game game;
     private final Map<Player, PlayerData> playerData = new HashMap<>();
     private LoadoutSelectionMenu loadoutSelectionMenu;
+    private Game game;
 
     @Override
     public void onEnable() {

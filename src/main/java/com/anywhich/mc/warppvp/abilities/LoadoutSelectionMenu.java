@@ -73,7 +73,7 @@ public class LoadoutSelectionMenu implements Listener {
             items.forEach(menuItem -> {
                 if (menuItem.getSlot() == event.getRawSlot()) {
                     menuItem.getOnClick().accept(player);
-                    player.closeInventory();
+//                    player.closeInventory();
                 }
             });
         }

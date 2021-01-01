@@ -27,6 +27,8 @@ public class ThrowableTnt extends Gear {
     public static final ItemStack ITEM = new ItemStack(Material.TNT, 1);
     public static final int ITEM_SLOT = 2;
 
+    public static final int TNT_FUSE = 50;
+    public static final double TNT_BOUNCE_VELOCITY = 0.2;
     public static final double KILL_REGISTER_RADIUS = 5;
 
     private final List<TNTPrimed> tntEntities = new ArrayList<>();
@@ -44,7 +46,7 @@ public class ThrowableTnt extends Gear {
 
             TNTPrimed tnt = player.getWorld().spawn(player.getEyeLocation(), TNTPrimed.class);
             tnt.setVelocity(player.getLocation().getDirection().multiply(0.5));
-            tnt.setFuseTicks(50);
+            tnt.setFuseTicks(TNT_FUSE);
             tnt.setSource(player);
             tntEntities.add(tnt);
         }
@@ -76,7 +78,7 @@ public class ThrowableTnt extends Gear {
         List<TNTPrimed> toRemove = new ArrayList<>();
         tntEntities.forEach(tnt -> {
             if (tnt.getVelocity().getY() <= Float.MIN_NORMAL && tnt.isOnGround()) {
-                tnt.setVelocity(tnt.getVelocity().setY(0.2));
+                tnt.setVelocity(tnt.getVelocity().setY(TNT_BOUNCE_VELOCITY));
                 toRemove.add(tnt);
             }
         });

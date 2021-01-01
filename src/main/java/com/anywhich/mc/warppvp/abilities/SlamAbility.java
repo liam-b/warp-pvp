@@ -9,7 +9,7 @@ import org.bukkit.util.Vector;
 import java.util.*;
 
 public class SlamAbility extends Ability {
-    public static final Abilities ABILITY = Abilities.SLAM;
+    public static final Abilities NAME = Abilities.SLAM;
     public static final int COOLDOWN = 20 * 7;
 
     public static final double LAUNCH_VELOCITY = 1.2;
@@ -25,8 +25,8 @@ public class SlamAbility extends Ability {
     private final Set<Player> pendingExplosionOnLanding = new HashSet<>();
     private final Set<Player> pendingLeaveGround = new HashSet<>();
 
-    public SlamAbility(AbilityManager abilityManager, WarpEffectManager warpEffectManager) {
-        super(abilityManager, warpEffectManager, ABILITY, COOLDOWN);
+    public SlamAbility(AbilitiesManager abilitiesManager, WarpEffectManager warpEffectManager) {
+        super(abilitiesManager, warpEffectManager, NAME, COOLDOWN);
     }
 
     protected void onUse(Player player) {
