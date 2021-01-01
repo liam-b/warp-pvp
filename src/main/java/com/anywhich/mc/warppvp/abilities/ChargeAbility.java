@@ -71,7 +71,7 @@ public class ChargeAbility extends Ability {
                 }
             });
 
-            player.getWorld().spawnParticle(Particle.BLOCK_DUST, player.getLocation().add(new Vector(random.nextDouble() - 0.5, random.nextDouble() - 0.5, random.nextDouble() - 0.5)), 2, Material.STONE.createBlockData());
+            player.getWorld().spawnParticle(Particle.BLOCK_DUST, player.getLocation().add(new Vector(random.nextDouble() - 0.5, random.nextDouble() - 0.5, random.nextDouble() - 0.5)), 2, Material.DIRT.createBlockData());
 
             player.setFallDistance(0);
             destination.timeout -= 1;

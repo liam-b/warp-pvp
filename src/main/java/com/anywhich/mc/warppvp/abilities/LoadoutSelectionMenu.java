@@ -22,6 +22,7 @@ import org.bukkit.util.Consumer;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -35,7 +36,7 @@ public class LoadoutSelectionMenu implements Listener {
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
 
         initializeItems(playerData);
-        inventory = Bukkit.createInventory(null, 18, "Loadout Selection");
+        inventory = Bukkit.createInventory(null, 27, "Loadout Selection");
         items.forEach(item -> item.addToInventory(inventory));
     }
 
@@ -49,7 +50,11 @@ public class LoadoutSelectionMenu implements Listener {
         items.add(AbilityMenuItems.getMenuItemForAbility(5, Abilities.HOP, playerData));
         items.add(AbilityMenuItems.getMenuItemForAbility(7, Abilities.SLAM, playerData));
 
-        items.add(PerkMenuItems.getMenuItemForPerk(11, Perks.MARTYRDOM, playerData));
+        items.add(PerkMenuItems.getMenuItemForPerk(18, Perks.MARTYRDOM, playerData));
+        items.add(PerkMenuItems.getMenuItemForPerk(20, Perks.VAMPIRE, playerData));
+        items.add(PerkMenuItems.getMenuItemForPerk(22, Perks.HOT_STREAK, playerData));
+        items.add(PerkMenuItems.getMenuItemForPerk(24, Perks.UTILITY_EXPERT, playerData));
+        items.add(PerkMenuItems.getMenuItemForPerk(26, Perks.WARP_SPECIALIST, playerData));
     }
 
     public void openInventory(HumanEntity entity) {
@@ -170,10 +175,10 @@ class AbilityMenuItems {
                 break;
         }
 
-        return new MenuItem(slot, material, ChatColor.GOLD + capitalize(abilityName.toString()), lore, player -> {
+        return new MenuItem(slot, material, ChatColor.GOLD + titleCase(abilityName.toString()), lore, player -> {
             playerData.putIfAbsent(player, new PlayerData());
             playerData.get(player).selectedAbility = abilityName;
-            player.sendMessage("Selected " + abilityName.toString().toLowerCase() + " ability");
+            player.sendMessage(ChatColor.GOLD + capitalize(abilityName.toString()) + ChatColor.WHITE + " ability selected");
         });
     }
 
@@ -187,7 +192,12 @@ class AbilityMenuItems {
     }
 
     private static String capitalize(String text) {
-        return text.substring(0, 1).toUpperCase() + text.substring(1).toLowerCase();
+        text = text.replace("_", " ").toLowerCase();
+        return text.substring(0, 1).toUpperCase() + text.substring(1);
+    }
+
+    private static String titleCase(String text) {
+        return Arrays.stream(text.split("_")).map(word -> word.substring(0, 1).toUpperCase() + word.substring(1).toLowerCase()).collect(Collectors.joining(" "));
     }
 }
 
@@ -199,18 +209,40 @@ class PerkMenuItems {
         switch (perkName) {
             case MARTYRDOM:
                 material = Material.TNT;
-                lore.add("Drop a live TNT when killed");
+                lore.add("Drop a live TNT when killed.");
+                break;
+            case VAMPIRE:
+                material = Material.MUTTON;
+                lore.add("Gain 5 hearts after a kill instead of 3.");
+                break;
+            case HOT_STREAK:
+                material = Material.LAVA_BUCKET;
+                lore.add("Gain a level of strength every 2 kills in a row.");
+                break;
+            case UTILITY_EXPERT:
+                material = Material.IRON_AXE;
+                lore.add("Ability cooldown is reduced by 5");
+                lore.add("seconds after a kill.");
+                break;
+            case WARP_SPECIALIST:
+                material = Material.END_CRYSTAL;
+                lore.add("Warp is limited to a maximum of 60%.");
                 break;
         }
 
-        return new MenuItem(slot, material, ChatColor.GOLD + capitalize(perkName.toString()), lore, player -> {
+        return new MenuItem(slot, material, ChatColor.AQUA + titleCase(perkName.toString()), lore, player -> {
             playerData.putIfAbsent(player, new PlayerData());
             playerData.get(player).selectedPerk = perkName;
-            player.sendMessage("Selected " + perkName.toString().toLowerCase() + " perk");
+            player.sendMessage(ChatColor.AQUA + capitalize(perkName.toString()) + ChatColor.WHITE + " perk selected");
         });
     }
 
     private static String capitalize(String text) {
-        return text.substring(0, 1).toUpperCase() + text.substring(1).toLowerCase();
+        text = text.replace("_", " ").toLowerCase();
+        return text.substring(0, 1).toUpperCase() + text.substring(1);
+    }
+
+    private static String titleCase(String text) {
+        return Arrays.stream(text.split("_")).map(word -> word.substring(0, 1).toUpperCase() + word.substring(1).toLowerCase()).collect(Collectors.joining(" "));
     }
 }

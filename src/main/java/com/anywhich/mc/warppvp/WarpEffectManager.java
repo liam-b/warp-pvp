@@ -130,7 +130,7 @@ public class WarpEffectManager implements Listener {
         Player player = event.getPlayer();
         if (hasJumped.contains(player)) {
             double jumpVelocity = map(warpLevels.get(player), JUMP_RESTRICTION_THRESHOLD, 1, JUMP_RESTRICTION_MIN_VELOCITY, JUMP_RESTRICTION_MAX_VELOCITY);
-            player.setVelocity(player.getVelocity().setY(jumpVelocity));
+            player.setVelocity(player.getVelocity().setY(-jumpVelocity));
             hasJumped.remove(player);
         }
     }

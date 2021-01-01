@@ -59,7 +59,7 @@ public class WarpGrenade extends Gear {
         ParticleHelper.particleSphere(hitLocation, RANGE_MAX, 100, Color.fromRGB(60, 60, 60));
 
         hitLocation.getNearbyPlayers(RANGE_MAX).forEach(player -> {
-            if (player != event.getEntity().getShooter() || true) {
+            if (player != event.getEntity().getShooter()) {
                 Vector playerTorso = player.getLocation().toVector().midpoint(player.getEyeLocation().toVector());
                 double distanceToPlayer = hitLocation.toVector().distance(playerTorso);
                 double normalisedDistance = map(distanceToPlayer, RANGE_MIN, RANGE_MAX, 0, 1);
