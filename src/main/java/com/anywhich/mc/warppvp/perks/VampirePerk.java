@@ -26,7 +26,7 @@ public class VampirePerk extends Perk {
     public void onPlayerDeath(PlayerDeathEvent event) {
         Player killer = event.getEntity().getKiller();
         if (killer != null && playerData.containsKey(event.getEntity()) && event.getEntity() != killer && perksManager.hasPlayerSelectedPerk(killer, NAME)) {
-            killer.setAbsorptionAmount(EXTRA_HEARTS);
+            killer.setAbsorptionAmount(killer.getAbsorptionAmount() + EXTRA_HEARTS);
             sendPerkActionbar(killer, "Awarded extra hearts");
         }
     }

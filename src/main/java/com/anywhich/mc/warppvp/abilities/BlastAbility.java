@@ -20,8 +20,6 @@ public class BlastAbility extends Ability {
     public static final int EFFECT_DURATION = 100;
     public static final int SPEED_AMPLIFIER = 1;
 
-//    private final Set<Player> pendingWarpOnLanding = new HashSet<>();
-
     public BlastAbility(AbilitiesManager abilitiesManager, WarpEffectManager warpEffectManager) {
         super(abilitiesManager, warpEffectManager, NAME, COOLDOWN);
     }
@@ -31,23 +29,8 @@ public class BlastAbility extends Ability {
         player.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, EFFECT_DURATION, 1, false, false, true));
 
 
-        impactSignature.createExplosion(player, warpEffectManager, 1000);
+        impactSignature.createExplosion(player, warpEffectManager, 1000); // TODO: switch to using a custom explosion system that includes distance dependant effects
 
         player.getWorld().playSound(player.getLocation(), Sound.ENTITY_IRON_GOLEM_DEATH, 1, 1.5f);
-//        player.getWorld().playSound(player.getLocation(), Sound.ENTITY_POLAR_BEAR_WARNING, 1, 0.7f);
     }
-
-//    @EventHandler
-//    public void onEntityDamage(EntityDamageEvent event) {
-//        if (event.getEntityType() == EntityType.PLAYER) {
-//            Player player = (Player) event.getEntity();
-//
-//            if (abilityManager.hasPlayerSelectedAbility(player, ABILITY)) {
-//                if (event.getCause() == EntityDamageEvent.DamageCause.FALL && pendingWarpOnLanding.contains(player)) {
-//                    warpEffectManager.increasePlayerWarpLevel(player, WARP_LEVEL);
-//                    pendingWarpOnLanding.remove(player);
-//                }
-//            }
-//        }
-//    }
 }

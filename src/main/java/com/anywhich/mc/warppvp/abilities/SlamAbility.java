@@ -3,7 +3,10 @@ package com.anywhich.mc.warppvp.abilities;
 import com.anywhich.mc.warppvp.WarpEffectManager;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.util.Vector;
 
 import java.util.*;
@@ -62,15 +65,14 @@ public class SlamAbility extends Ability {
         });
     }
 
-//    @EventHandler
-//    public void onEntityDamage(EntityDamageEvent event) {
-//        if (event.getEntityType() == EntityType.PLAYER) {
-//            Player player = (Player) event.getEntity();
-//
-//            if (event.getCause() == EntityDamageEvent.DamageCause.FALL && pendingExplosionOnLanding.contains(player)) {
-//                impactSignature.createExplosion(player, warpEffectManager, 200);
-//                pendingExplosionOnLanding.remove(player);
-//            }
-//        }
-//    }
+    @EventHandler
+    public void onEntityDamage(EntityDamageEvent event) {
+        if (event.getEntityType() == EntityType.PLAYER) {
+            Player player = (Player) event.getEntity();
+
+            if (event.getCause() == EntityDamageEvent.DamageCause.FALL && abilitiesManager.hasPlayerSelectedAbility(player, NAME)) {
+                event.setDamage(event.getDamage() * 0.5);
+            }
+        }
+    }
 }
