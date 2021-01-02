@@ -6,6 +6,7 @@ import com.anywhich.mc.warppvp.playerdata.PlayerData;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -73,7 +74,7 @@ public class LoadoutSelectionMenu implements Listener {
             items.forEach(menuItem -> {
                 if (menuItem.getSlot() == event.getRawSlot()) {
                     menuItem.getOnClick().accept(player);
-//                    player.closeInventory();
+                    player.playSound(player.getLocation(), Sound.ENTITY_ARROW_HIT_PLAYER, 0.8f, 1);
                 }
             });
         }
@@ -175,10 +176,10 @@ class AbilityMenuItems {
                 break;
         }
 
-        return new MenuItem(slot, material, ChatColor.GOLD + titleCase(abilityName.toString()), lore, player -> {
+        return new MenuItem(slot, material, Abilities.COLOR + abilityName.toTitle(), lore, player -> {
             playerData.putIfAbsent(player, new PlayerData());
             playerData.get(player).selectedAbility = abilityName;
-            player.sendMessage(ChatColor.GOLD + capitalize(abilityName.toString()) + ChatColor.WHITE + " ability selected");
+            player.sendMessage(Abilities.COLOR + abilityName.toCapital() + ChatColor.WHITE + " ability selected");
         });
     }
 
@@ -189,15 +190,6 @@ class AbilityMenuItems {
     private static double round(double number) {
         DecimalFormat newFormat = new DecimalFormat("0.#");
         return Double.parseDouble(newFormat.format(number));
-    }
-
-    private static String capitalize(String text) {
-        text = text.replace("_", " ").toLowerCase();
-        return text.substring(0, 1).toUpperCase() + text.substring(1);
-    }
-
-    private static String titleCase(String text) {
-        return Arrays.stream(text.split("_")).map(word -> word.substring(0, 1).toUpperCase() + word.substring(1).toLowerCase()).collect(Collectors.joining(" "));
     }
 }
 
@@ -217,7 +209,7 @@ class PerkMenuItems {
                 break;
             case HOT_STREAK:
                 material = Material.LAVA_BUCKET;
-                lore.add("Gain a level of strength every " + HotStreakPerk.STREAK_PER_LEVEL);
+                lore.add("Gain a level of sharpness every " + HotStreakPerk.KILLS_PER_LEVEL);
                 lore.add("kills in a row.");
                 break;
             case UTILITY_EXPERT:
@@ -230,19 +222,10 @@ class PerkMenuItems {
                 break;
         }
 
-        return new MenuItem(slot, material, ChatColor.AQUA + titleCase(perkName.toString()), lore, player -> {
+        return new MenuItem(slot, material, Perks.COLOR + perkName.toTitle(), lore, player -> {
             playerData.putIfAbsent(player, new PlayerData());
             playerData.get(player).selectedPerk = perkName;
-            player.sendMessage(ChatColor.AQUA + capitalize(perkName.toString()) + ChatColor.WHITE + " perk selected");
+            player.sendMessage(Perks.COLOR + perkName.toCapital() + ChatColor.WHITE + " perk selected");
         });
-    }
-
-    private static String capitalize(String text) {
-        text = text.replace("_", " ").toLowerCase();
-        return text.substring(0, 1).toUpperCase() + text.substring(1);
-    }
-
-    private static String titleCase(String text) {
-        return Arrays.stream(text.split("_")).map(word -> word.substring(0, 1).toUpperCase() + word.substring(1).toLowerCase()).collect(Collectors.joining(" "));
     }
 }
