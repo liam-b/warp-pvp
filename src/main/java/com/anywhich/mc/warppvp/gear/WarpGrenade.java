@@ -34,8 +34,8 @@ public class WarpGrenade extends Gear {
     }
 
     private static final double RANGE = 1.3;
-    private static final double WARP_DIRECT_HIT = 0.09;
-    private static final double WARP_INDIRECT_HIT = 0.06;
+    private static final double WARP_DIRECT_HIT = 0.10;
+    private static final double WARP_INDIRECT_HIT = 0.07;
 
     public WarpGrenade(WarpEffectManager warpEffectManager, Map<Player, PlayerData> playerData) {
         super(warpEffectManager, playerData, COUNT_MAX, ITEM, ITEM_SLOT, SUPPLY_MAX, SUPPLY_PERIOD);

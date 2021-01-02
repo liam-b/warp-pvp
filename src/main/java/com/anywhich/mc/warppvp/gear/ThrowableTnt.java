@@ -29,7 +29,8 @@ public class ThrowableTnt extends Gear {
     public static final ItemStack ITEM = new ItemStack(Material.TNT, 1);
     public static final int ITEM_SLOT = 2;
 
-    public static final int TNT_FUSE = 50;
+    public static final float TNT_POWER = 3.2f;
+    public static final int TNT_FUSE = 45;
     public static final double TNT_BOUNCE_VELOCITY = 0.2;
     public static final double KILL_REGISTER_RADIUS = 5;
 
@@ -59,15 +60,10 @@ public class ThrowableTnt extends Gear {
         if (event.getEntity().getType() == EntityType.PRIMED_TNT) {
             TNTPrimed tnt = (TNTPrimed) event.getEntity();
             if (tnt.getSource() != null) {
-                event.getEntity().getLocation().getNearbyPlayers(KILL_REGISTER_RADIUS).forEach((Player player) -> {
-                    if (player != tnt.getSource()) player.damage(0.1, tnt.getSource());
-//                    if (player != tnt.getSource()) {
-//                        EntityDamageEvent damageEvent = new EntityDamageEvent(tnt.getSource(), EntityDamageEvent.DamageCause.ENTITY_EXPLOSION, 0);
-//                        player.setLastDamageCause(damageEvent);
-//                        Bukkit.getServer().getPluginManager().callEvent(damageEvent);
-//                    }
+                event.getEntity().getLocation().getNearbyPlayers(KILL_REGISTER_RADIUS).forEach(nearbyPlayer -> {
+                    if (nearbyPlayer != tnt.getSource()) nearbyPlayer.damage(0.1, tnt.getSource());
                 });
-                tnt.getLocation().createExplosion(3, false, false);
+                tnt.getLocation().createExplosion(TNT_POWER, false, false);
 
                 tntEntities.remove(tnt);
                 event.setCancelled(true);

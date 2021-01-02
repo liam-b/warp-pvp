@@ -17,7 +17,7 @@ public class SlamAbility extends Ability {
     public static final double RANGE = 1.8;
     public static final double KNOCKBACK = 0.8;
     public static final double KNOCKBACK_ANGLE = 0.8;
-    public static final double WARP = 0.6;
+    public static final double WARP = 0.5;
     public static final double DAMAGE = 7;
     private static final ImpactSignature impactSignature = new ImpactSignature(RANGE, KNOCKBACK, KNOCKBACK_ANGLE, WARP, DAMAGE);
     public static final double IMPACT_VELOCITY_MIN = 0.5;

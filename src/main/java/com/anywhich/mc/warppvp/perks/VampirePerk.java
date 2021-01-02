@@ -13,12 +13,12 @@ import java.util.Map;
 
 public class VampirePerk extends Perk {
     public static final Perks NAME = Perks.VAMPIRE;
-    public static final int EXTRA_HEARTS = 5;
+    public static final int EXTRA_HEARTS = 3;
 
     private final Map<Player, PlayerData> playerData;
 
     public VampirePerk(PerksManager perksManager, Map<Player, PlayerData> playerData) {
-        super(perksManager);
+        super(perksManager, NAME);
         this.playerData = playerData;
     }
 
@@ -27,6 +27,7 @@ public class VampirePerk extends Perk {
         Player killer = event.getEntity().getKiller();
         if (killer != null && playerData.containsKey(event.getEntity()) && event.getEntity() != killer && perksManager.hasPlayerSelectedPerk(killer, NAME)) {
             killer.setAbsorptionAmount(EXTRA_HEARTS);
+            sendPerkActionbar(killer, "Awarded extra hearts");
         }
     }
 }
