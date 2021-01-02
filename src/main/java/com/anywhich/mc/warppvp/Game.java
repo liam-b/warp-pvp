@@ -18,11 +18,12 @@ public class Game {
     public final EquipmentManager equipmentManager;
     public final PlayerManager playerManager;
     public final ScoreboardManager scoreboardManager;
+    public final PowerRingsManager powerRingsManager;
 
     public final Map<Player, PlayerData> playerData;
 
     public Game(WarpPvpConfig config, Map<Player, PlayerData> playerData, World world) {
-        this.playerData = playerData.entrySet().stream().filter(entry -> !entry.getKey().isDead() && entry.getValue().isEligibleToPlay()).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        this.playerData = playerData.entrySet().stream().filter(entry -> !entry.getKey().isDead() && entry.getValue().isEligibleToPlay()).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)); // TODO: when this game is in it's own world, the game should be aborted unless all players in the world are eligible
 
         warpEffectManager = new WarpEffectManager(this.playerData, world);
         gearManager = new GearManager(warpEffectManager, this.playerData);
@@ -31,6 +32,7 @@ public class Game {
         equipmentManager = new EquipmentManager(this.playerData, gearManager);
         playerManager = new PlayerManager(this.playerData, world, config);
         scoreboardManager = new ScoreboardManager(this.playerData.keySet());
+        powerRingsManager = new PowerRingsManager(this.playerData, world, config);
 
         this.playerData.keySet().forEach(player -> {
             resetPlayer(player);
@@ -49,6 +51,7 @@ public class Game {
         equipmentManager.destroy();
         playerManager.destroy();
         scoreboardManager.destroy();
+        powerRingsManager.destroy();
     }
 
     private void resetPlayer(Player player) {

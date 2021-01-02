@@ -1,6 +1,5 @@
 package com.anywhich.mc.warppvp;
 
-import com.anywhich.mc.warppvp.gear.Gear;
 import com.anywhich.mc.warppvp.playerdata.PlayerData;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -18,7 +17,6 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import org.bukkit.util.Vector;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -38,7 +36,7 @@ public class PlayerManager implements Listener {
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
         regenTaskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, this::regenTask, 0, REGEN_INTERVAL);
 
-        spawnLocations = config.spawns.stream().map(vector -> vector.toLocation(world)).collect(Collectors.toList());
+        spawnLocations = config.playerSpawns.stream().map(vector -> vector.toLocation(world)).collect(Collectors.toList());
         this.playerData = playerData;
     }
 
@@ -90,7 +88,7 @@ public class PlayerManager implements Listener {
                 potentialSpawn = random(spawnLocations);
                 spawnAttempts++;
             }
-            while (potentialSpawn.getNearbyPlayers(SPAWN_PLAYER_EXCLUSION_RANGE).stream().anyMatch(player -> player != event.getPlayer()) && spawnAttempts < SPAWN_EXCLUSION_ATTEMPTS_MAX);
+            while (potentialSpawn.getNearbyPlayers(SPAWN_PLAYER_EXCLUSION_RANGE).stream().anyMatch(player -> player != event.getPlayer()) && spawnAttempts < SPAWN_EXCLUSION_ATTEMPTS_MAX); // TODO: could also check for tnt in area
             event.setRespawnLocation(potentialSpawn);
         }
     }

@@ -4,7 +4,6 @@ import com.anywhich.mc.commandutil.Command;
 import com.anywhich.mc.warppvp.abilities.LoadoutSelectionMenu;
 import com.anywhich.mc.warppvp.playerdata.PlayerData;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -52,7 +51,7 @@ public final class WarpPvp extends JavaPlugin implements Listener {
         spawnsCommand.addSubCommand("add").addUsage(new Class<?>[0], (sender, args) -> {
             if (sender instanceof Player) {
                 Vector position = ((Player) sender).getLocation().toVector();
-                config.spawns.add(position);
+                config.playerSpawns.add(position);
                 config.save();
 
                 sender.sendMessage("Added spawn location " + position.toBlockVector());
@@ -60,19 +59,51 @@ public final class WarpPvp extends JavaPlugin implements Listener {
         });
 
         spawnsCommand.addSubCommand("clear").addUsage(new Class<?>[0], (sender, args) -> {
-            config.spawns.clear();
+            config.playerSpawns.clear();
             config.save();
 
             sender.sendMessage("Cleared all spawn locations");
+        });
+
+        Command ringsCommand = mainCommand.addSubCommand("rings");
+
+        ringsCommand.addSubCommand("add").addUsage(new Class<?>[0], (sender, args) -> {
+            if (sender instanceof Player) {
+                Vector position = ((Player) sender).getLocation().toVector();
+                config.ringSpawns.add(position);
+                config.save();
+
+                sender.sendMessage("Added ring spawn location " + position.toBlockVector());
+            }
+        });
+
+        ringsCommand.addSubCommand("clear").addUsage(new Class<?>[0], (sender, args) -> {
+            config.ringSpawns.clear();
+            config.save();
+
+            sender.sendMessage("Cleared all ring spawn locations");
         });
 
         mainCommand.addSubCommand("loadout").addUsage(new Class<?>[0], (sender, args) -> {
             if (sender instanceof Player) loadoutSelectionMenu.openInventory((Player) sender);
         });
 
-        mainCommand.addSubCommand("test").addUsage(new Class<?>[0], (sender, args) -> {
-            if (sender instanceof Player) ((Player) sender).damage(10);
-        });
+//        mainCommand.addSubCommand("changelog").addUsage(new Class<?>[0], (sender, args) -> {
+//            try {
+//                URL url = new URL("https://api.github.com/repos/liam-b/warp-pvp/commits");
+//                URLConnection request = url.openConnection();
+//                request.connect();
+//
+//                JsonParser jp = new JsonParser();
+//                JsonElement root = jp.parse(new InputStreamReader((InputStream) request.getContent()));
+//                root.getAsJsonArray().forEach(element -> {
+//                    sender.sendMessage(element.getAsJsonObject().get("commit").getAsJsonObject().get("message").getAsString());
+//                });
+////                sender.sendMessage(root.getAsJsonArray().getAsString());
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//        });
 
         mainCommand.build(getCommand("warp"));
         getServer().getPluginManager().registerEvents(this, this);

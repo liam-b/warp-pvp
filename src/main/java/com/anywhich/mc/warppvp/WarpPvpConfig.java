@@ -8,7 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class WarpPvpConfig extends Config { // TODO: maybe this should be singleton?
-    public List<Vector> spawns = new ArrayList<>();
+    public List<Vector> playerSpawns = new ArrayList<>();
+    public List<Vector> ringSpawns = new ArrayList<>();
 
     public WarpPvpConfig(JavaPlugin plugin) {
         super(plugin);

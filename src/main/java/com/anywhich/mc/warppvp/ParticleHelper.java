@@ -1,9 +1,17 @@
 package com.anywhich.mc.warppvp;
 
+import net.minecraft.server.v1_16_R3.*;
+import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Particle;
+import org.bukkit.craftbukkit.v1_16_R3.entity.CraftPlayer;
+import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 public class ParticleHelper {
     public static void particleExplosion(Location center, int samples, double speed) {
@@ -16,8 +24,17 @@ public class ParticleHelper {
         Vector[] points = pointsOnSurfaceOfSphere(center.toVector(), size, samples);
 
         for (Vector point : points) {
-//            Vector direction = point.clone().subtract(center.toVector()).normalize();
             center.getWorld().spawnParticle(Particle.REDSTONE, point.toLocation(center.getWorld()), 1, new Particle.DustOptions(color, 0.8f));
+        }
+    }
+
+    public static void animatedParticleExplosion(Location center, double size, int samples, double speed) {
+        Vector[] points = pointsOnSurfaceOfSphere(center.toVector(), size, samples);
+        List<Player> players = new ArrayList<>(Bukkit.getOnlinePlayers());
+
+        for (Vector point : points) {
+            Vector direction = point.clone().subtract(center.toVector()).normalize();
+            players.forEach(player -> spawnNmsParticle(player, Particles.FIREWORK, point.toLocation(center.getWorld()), direction, 0, speed, true));
         }
     }
 
@@ -36,5 +53,11 @@ public class ParticleHelper {
         }
 
         return points;
+    }
+
+    private static void spawnNmsParticle(Player player, ParticleType particle, Location position, Vector offset, int count, double speed, boolean showWhenFar) {
+        PacketPlayOutWorldParticles particlePacket = new PacketPlayOutWorldParticles(particle, showWhenFar, position.getX(), position.getY(), position.getZ(), (float)offset.getX(), (float)offset.getY(), (float)offset.getZ(), (float)speed, count);
+        EntityPlayer nmsPlayer = ((CraftPlayer) player).getHandle();
+        nmsPlayer.playerConnection.sendPacket(particlePacket);
     }
 }
