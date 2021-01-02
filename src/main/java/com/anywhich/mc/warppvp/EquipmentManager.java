@@ -25,18 +25,8 @@ import java.util.List;
 import java.util.Map;
 
 public class EquipmentManager implements Listener {
-    private final HashMap<Integer, ItemStack> permanentItems = new HashMap<>();
-    private final HashMap<Integer, ItemStack> gearItems = new HashMap<>();
-    private final Map<Player, PlayerData> playerData;
-//    private final GearManager gearManager;
-
-    public EquipmentManager(Map<Player, PlayerData> playerData, GearManager gearManager) {
-        WarpPvp plugin = JavaPlugin.getPlugin(WarpPvp.class);
-        plugin.getServer().getPluginManager().registerEvents(this, plugin);
-
-        this.playerData = playerData;
-//        this.gearManager = gearManager;
-
+    public static final HashMap<Integer, ItemStack> permanentItems = new HashMap<>();
+    static {
         ItemStack sword = new ItemStack(Material.STONE_SWORD);
         ItemMeta swordMeta = sword.getItemMeta();
         swordMeta.setUnbreakable(true);
@@ -78,7 +68,16 @@ public class EquipmentManager implements Listener {
 //        helmetMeta.addAttributeModifier(Attribute.GENERIC_ARMOR, new AttributeModifier(UUID.randomUUID(), "generic.armor", 2, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlot.HEAD));
         helmet.setItemMeta(helmetMeta);
         permanentItems.put(39, helmet);
+    }
 
+    private final HashMap<Integer, ItemStack> gearItems = new HashMap<>();
+    private final Map<Player, PlayerData> playerData;
+
+    public EquipmentManager(Map<Player, PlayerData> playerData, GearManager gearManager) {
+        WarpPvp plugin = JavaPlugin.getPlugin(WarpPvp.class);
+        plugin.getServer().getPluginManager().registerEvents(this, plugin);
+
+        this.playerData = playerData;
         for (Gear gear : gearManager.getGear()) {
             gearItems.put(gear.ITEM_SLOT, gear.ITEM.asQuantity(Math.floorDiv(gear.SUPPLY_MAX, 2)));
         }
