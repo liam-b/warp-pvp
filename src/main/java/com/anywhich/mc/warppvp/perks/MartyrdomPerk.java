@@ -10,7 +10,7 @@ public class MartyrdomPerk extends Perk {
     public static final int TNT_FUSE = 30;
 
     public MartyrdomPerk(PerksManager perksManager) {
-        super(perksManager);
+        super(perksManager, NAME);
     }
 
     @EventHandler
@@ -20,6 +20,8 @@ public class MartyrdomPerk extends Perk {
             TNTPrimed tnt = player.getWorld().spawn(player.getEyeLocation(), TNTPrimed.class);
             tnt.setFuseTicks(TNT_FUSE);
             tnt.setSource(player);
+
+            sendPerkActionbar(player, "Dropped live TNT");
         }
     }
 }

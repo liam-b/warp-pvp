@@ -10,10 +10,10 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public abstract class Ability implements Listener {
-//    private static final double GROUND_DISTANCE_LIMIT = 1;
     public final Abilities name;
     public final int cooldown;
 
@@ -43,13 +43,18 @@ public abstract class Ability implements Listener {
     public void onPlayerInteract(PlayerInteractEvent event) {
         Player player = event.getPlayer();
         if (abilitiesManager.hasPlayerSelectedAbility(player, name)) {
-            if (event.getItem() != null && event.getItem().getType() == Material.STONE_SWORD && (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK)) {
+            if (event.getItem() != null && isSwordMaterial(event.getItem()) && (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK)) {
                 if (abilitiesManager.isPlayerAbilityReady(player)) {
                     abilitiesManager.resetPlayerCooldown(player, cooldown);
                     onUse(player);
                 }
             }
         }
+    }
+
+    private boolean isSwordMaterial(ItemStack itemStack) {
+        Material material = itemStack.getType();
+        return material == Material.WOODEN_SWORD || material == Material.STONE_SWORD || material == Material.IRON_SWORD || material == Material.DIAMOND_SWORD || material == Material.NETHERITE_SWORD;
     }
 
 //    private static double getDistanceFromGround(Entity entity){
