@@ -44,7 +44,6 @@ public class ScoreboardManager implements Listener {
 
     public void destroy() {
         HandlerList.unregisterAll(this);
-//        players.forEach(player -> player.setScoreboard(Bukkit.getScoreboardManager().getMainScoreboard()));
     }
 
     @EventHandler
@@ -53,8 +52,8 @@ public class ScoreboardManager implements Listener {
 
         Player killer = event.getEntity().getKiller();
         if (killer != null && players.contains(event.getEntity()) && players.contains(killer) && event.getEntity() != killer) {
+            killer.sendTitle("", "[⚔] " + event.getEntity().getDisplayName(), 4, 42, 4);
             incrementScore(kills, killer);
-            killer.sendActionBar("[⚔] " + event.getEntity().getDisplayName());
         }
     }
 

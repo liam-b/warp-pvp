@@ -24,8 +24,10 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class PlayerManager implements Listener {
-    private static final int REGEN_INTERVAL = 40;
+    private static final int REGEN_INTERVAL = 45;
     private static final PotionEffect KILL_REGEN_POTION = new PotionEffect(PotionEffectType.REGENERATION, 60, 2, false, false, true);
+    private static final double SPAWN_PLAYER_EXCLUSION_RANGE = 10;
+    private static final int SPAWN_EXCLUSION_ATTEMPTS_MAX = 8;
 
     private final int regenTaskId;
     private final Map<Player, PlayerData> playerData;
@@ -82,7 +84,14 @@ public class PlayerManager implements Listener {
     @EventHandler
     public void onPlayerRespawn(PlayerRespawnEvent event) {
         if (playerData.containsKey(event.getPlayer())) {
-            event.setRespawnLocation(random(spawnLocations));
+            int spawnAttempts = 0;
+            Location potentialSpawn;
+            do {
+                potentialSpawn = random(spawnLocations);
+                spawnAttempts++;
+            }
+            while (potentialSpawn.getNearbyPlayers(SPAWN_PLAYER_EXCLUSION_RANGE).stream().anyMatch(player -> player != event.getPlayer()) && spawnAttempts < SPAWN_EXCLUSION_ATTEMPTS_MAX);
+            event.setRespawnLocation(potentialSpawn);
         }
     }
 
@@ -93,9 +102,9 @@ public class PlayerManager implements Listener {
         }
     }
 
-    public static <T> T random(Collection<T> coll) {
-        int num = (int) (Math.random() * coll.size());
-        for(T t: coll) if (--num < 0) return t;
+    public static <T> T random(Collection<T> collection) {
+        int num = (int) (Math.random() * collection.size());
+        for(T t: collection) if (--num < 0) return t;
         throw new AssertionError();
     }
 }
