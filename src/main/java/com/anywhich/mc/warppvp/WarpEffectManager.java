@@ -86,7 +86,6 @@ public class WarpEffectManager implements Listener {
 
     public void increasePlayerWarpLevel(Player player, double amount) {
         warpLevels.put(player, Math.min(warpLevels.getOrDefault(player, 0.0) + amount, 1));
-        player.getWorld().playSound(player.getLocation(), Sound.ENTITY_PLAYER_BREATH, 1, 2);
     }
 
     private void onTick() {

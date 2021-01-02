@@ -6,6 +6,7 @@ import org.bukkit.Sound;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.util.Vector;
 
@@ -65,13 +66,13 @@ public class SlamAbility extends Ability {
         });
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onEntityDamage(EntityDamageEvent event) {
         if (event.getEntityType() == EntityType.PLAYER) {
             Player player = (Player) event.getEntity();
 
-            if (event.getCause() == EntityDamageEvent.DamageCause.FALL && abilitiesManager.hasPlayerSelectedAbility(player, NAME)) {
-                event.setDamage(event.getDamage() * 0.5);
+            if (event.getCause() == EntityDamageEvent.DamageCause.FALL && pendingExplosionOnLanding.contains(player)) {
+                event.setDamage(event.getDamage() * 0.6);
             }
         }
     }

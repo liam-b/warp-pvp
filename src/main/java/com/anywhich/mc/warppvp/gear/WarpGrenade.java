@@ -51,6 +51,8 @@ public class WarpGrenade extends Gear {
             Snowball ball = player.getWorld().spawn(player.getEyeLocation(), Snowball.class);
             ball.setVelocity(player.getLocation().getDirection().multiply(1.5));
             ball.setShooter(player);
+
+            player.playSound(player.getLocation(), Sound.ENTITY_SNOWBALL_THROW, 1f, 1f);
         }
     }
 
@@ -58,6 +60,7 @@ public class WarpGrenade extends Gear {
     public void onProjectileHit(ProjectileHitEvent event) {
         Location hitLocation = event.getEntity().getLocation();
         ParticleHelper.particleSphere(hitLocation, RANGE, 100, Color.fromRGB(60, 60, 60));
+        hitLocation.getWorld().playSound(hitLocation, Sound.BLOCK_FIRE_EXTINGUISH, 0.6f, 2f);
 
         if (event.getHitEntity() != null && event.getHitEntity() instanceof Player) {
             Player hitPlayer = (Player) event.getHitEntity();

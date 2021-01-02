@@ -16,8 +16,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class PowerRingsManager implements Listener {
-    public static final int RING_GENERATE_INTERVAL = 120 * 20;
-    public static final int RING_GENERATE_VARIANCE = 15 * 20;
+    public static final int RING_GENERATE_INTERVAL = 160 * 20;
+    public static final int RING_GENERATE_VARIANCE = 25 * 20;
 
     private final WarpPvp plugin;
     private final Map<Player, PlayerData> playerData;
@@ -81,7 +81,9 @@ class PowerRing {
     public static final int LIFETIME = 35 * (20 / UPDATE_INTERVAL);
     public static final int PREPARE_TIME = 15 * (20 / UPDATE_INTERVAL);
 
-    private static final PotionEffect POTION_EFFECT = new PotionEffect(PotionEffectType.SPEED, 100, 0, false, true, true);
+    private static final PotionEffect POTION_EFFECT = new PotionEffect(PotionEffectType.SPEED, 0, 0, false, true, true);
+    private static final int POTION_DURATION_INITIAL = 3 * 20;
+    private static final int POTION_DURATION_FINAL = 25 * 20 - POTION_DURATION_INITIAL;
     private static final int ABSORPTION_HEARTS_TOTAL = 10;
 
     private static final double RADIUS = 3.5;
@@ -95,12 +97,12 @@ class PowerRing {
     private static final int PREPARE_EXPLOSION_NUM_PARTICLES = 32;
     private static final double PREPARE_EXPLOSION_PARTICLE_SPEED = 0.4;
 
-
     private final Random random = new Random();
 
     private int age = -PREPARE_TIME;
     private final Location center;
     private final Map<Player, PlayerData> playerData;
+    private final Map<Player, Integer> playerEffectDurations = new HashMap<>();
 
     public PowerRing(Location center, Map<Player, PlayerData> playerData) {
         this.center = center;
@@ -125,12 +127,18 @@ class PowerRing {
             drawParticles();
             center.getNearbyPlayers(RADIUS).forEach(player -> {
                 if (playerData.containsKey(player)) {
-                    player.addPotionEffect(POTION_EFFECT);
+                    int duration = playerEffectDurations.getOrDefault(player, POTION_DURATION_INITIAL);
+                    if (age % (LIFETIME / (POTION_DURATION_FINAL / 20)) == 0) duration += 20;
+                    playerEffectDurations.put(player, duration);
+
+                    player.addPotionEffect(POTION_EFFECT.withDuration(duration));
                     if (age % (LIFETIME / ABSORPTION_HEARTS_TOTAL) == 0) {
                         player.setAbsorptionAmount(Math.min(player.getAbsorptionAmount() + 1, ABSORPTION_HEARTS_TOTAL));
                     }
                 }
             });
+
+            if (age % 5 == 0) center.getWorld().playSound(center, Sound.BLOCK_FIRE_AMBIENT, 1f, 0.25f);
         }
 
         age++;

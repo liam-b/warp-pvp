@@ -74,7 +74,7 @@ public class LoadoutSelectionMenu implements Listener {
             items.forEach(menuItem -> {
                 if (menuItem.getSlot() == event.getRawSlot()) {
                     menuItem.getOnClick().accept(player);
-                    player.playSound(player.getLocation(), Sound.ENTITY_ARROW_HIT_PLAYER, 0.8f, 1);
+//                    player.playSound(player.getLocation(), Sound.ENTITY_ARROW_HIT_PLAYER, 0.8f, 1);
                 }
             });
         }
@@ -180,6 +180,7 @@ class AbilityMenuItems {
             playerData.putIfAbsent(player, new PlayerData());
             playerData.get(player).selectedAbility = abilityName;
             player.sendMessage(Abilities.COLOR + abilityName.toCapital() + ChatColor.WHITE + " ability selected");
+            player.playSound(player.getLocation(), Sound.ITEM_ARMOR_EQUIP_IRON, 0.8f, 1);
         });
     }
 
@@ -226,6 +227,7 @@ class PerkMenuItems {
             playerData.putIfAbsent(player, new PlayerData());
             playerData.get(player).selectedPerk = perkName;
             player.sendMessage(Perks.COLOR + perkName.toCapital() + ChatColor.WHITE + " perk selected");
+            player.playSound(player.getLocation(), Sound.ITEM_ARMOR_EQUIP_DIAMOND, 0.8f, 1);
         });
     }
 }
