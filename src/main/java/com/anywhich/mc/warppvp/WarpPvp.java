@@ -3,6 +3,8 @@ package com.anywhich.mc.warppvp;
 import com.anywhich.mc.commandutil.Command;
 import com.anywhich.mc.warppvp.abilities.LoadoutSelectionMenu;
 import com.anywhich.mc.warppvp.playerdata.PlayerData;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -13,6 +15,10 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.Vector;
 
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -84,26 +90,25 @@ public final class WarpPvp extends JavaPlugin implements Listener {
             sender.sendMessage("Cleared all ring spawn locations");
         });
 
+        mainCommand.addSubCommand("changelog").addUsage(new Class<?>[0], (sender, args) -> {
+            try {
+                URL url = new URL("https://api.github.com/repos/liam-b/warp-pvp/commits?since=2021-1-02T00:00:00Z");
+                URLConnection request = url.openConnection();
+                request.connect();
+
+                JsonParser jp = new JsonParser();
+                JsonElement root = jp.parse(new InputStreamReader((InputStream) request.getContent()));
+                root.getAsJsonArray().forEach(element -> {
+                    sender.sendMessage(element.getAsJsonObject().get("commit").getAsJsonObject().get("message").getAsString());
+                });
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+
         mainCommand.addSubCommand("loadout").addUsage(new Class<?>[0], (sender, args) -> {
             if (sender instanceof Player) loadoutSelectionMenu.openInventory((Player) sender);
         });
-
-//        mainCommand.addSubCommand("changelog").addUsage(new Class<?>[0], (sender, args) -> {
-//            try {
-//                URL url = new URL("https://api.github.com/repos/liam-b/warp-pvp/commits");
-//                URLConnection request = url.openConnection();
-//                request.connect();
-//
-//                JsonParser jp = new JsonParser();
-//                JsonElement root = jp.parse(new InputStreamReader((InputStream) request.getContent()));
-//                root.getAsJsonArray().forEach(element -> {
-//                    sender.sendMessage(element.getAsJsonObject().get("commit").getAsJsonObject().get("message").getAsString());
-//                });
-////                sender.sendMessage(root.getAsJsonArray().getAsString());
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//        });
 
         mainCommand.build(getCommand("warp"));
         getServer().getPluginManager().registerEvents(this, this);
