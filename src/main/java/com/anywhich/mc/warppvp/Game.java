@@ -4,13 +4,20 @@ import com.anywhich.mc.warppvp.gear.GearManager;
 import com.anywhich.mc.warppvp.abilities.AbilitiesManager;
 import com.anywhich.mc.warppvp.perks.PerksManager;
 import com.anywhich.mc.warppvp.playerdata.PlayerData;
+import com.destroystokyo.paper.Title;
 import org.bukkit.*;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class Game {
+public class Game implements Listener {
     public final WarpEffectManager warpEffectManager;
     public final GearManager gearManager;
     public final AbilitiesManager abilitiesManager;
@@ -25,20 +32,23 @@ public class Game {
 
     private boolean inCountdown = true;
 
-    public Game(WarpPvpConfig config, Map<Player, PlayerData> playerData, World world) {
-        this.playerData = playerData.entrySet().stream().filter(entry -> !entry.getKey().isDead() && entry.getValue().isEligibleToPlay()).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)); // TODO: when this game is in it's own world, the game should be aborted unless all players in the world are eligible
+    public Game(WarpPvpConfig config, Map<Player, PlayerData> playerData) {
+        this.playerData = playerData;
 
-        warpEffectManager = new WarpEffectManager(this.playerData, world);
-        gearManager = new GearManager(warpEffectManager, this.playerData);
-        abilitiesManager = new AbilitiesManager(warpEffectManager, this.playerData);
-        perksManager = new PerksManager(this.playerData);
-        equipmentManager = new EquipmentManager(this.playerData, gearManager);
-        playerManager = new PlayerManager(this.playerData, world, config);
-        scoreboardManager = new ScoreboardManager(this.playerData.keySet());
-        powerRingsManager = new PowerRingsManager(this.playerData, world, config);
+        world = Bukkit.createWorld(WorldCreator.name(config.worlds.game));
+        world.setDifficulty(Difficulty.NORMAL);
 
-        this.playerData.keySet().forEach(player -> {
-            resetPlayer(player);
+        warpEffectManager = new WarpEffectManager(playerData, world);
+        gearManager = new GearManager(warpEffectManager, playerData);
+        abilitiesManager = new AbilitiesManager(warpEffectManager, playerData);
+        perksManager = new PerksManager(playerData);
+        equipmentManager = new EquipmentManager(playerData, gearManager);
+        playerManager = new PlayerManager(playerData, world, config);
+        scoreboardManager = new ScoreboardManager(playerData.keySet());
+        powerRingsManager = new PowerRingsManager(playerData, world, config);
+
+        playerData.keySet().forEach(player -> {
+            PlayerManager.resetPlayer(player);
             equipmentManager.supplyEquipment(player);
         });
         playerManager.randomlySpreadPlayers();
@@ -48,9 +58,7 @@ public class Game {
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 
-    public void destroy() {
-        playerData.keySet().forEach(this::resetPlayer);
-
+    public void destroy(World world) {
         warpEffectManager.destroy();
         gearManager.destroy();
         abilitiesManager.destroy();

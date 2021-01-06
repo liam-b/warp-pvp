@@ -42,6 +42,13 @@
                         </configuration>
                     </execution>
                 </executions>
+<!--                <configuration>-->
+<!--                    <artifactSet>-->
+<!--                        <includes>-->
+<!--                            <include>com.anywhich.mc:minigameutil</include>-->
+<!--                        </includes>-->
+<!--                    </artifactSet>-->
+<!--                </configuration>-->
             </plugin>
         </plugins>
         <resources>
@@ -65,6 +72,11 @@
             <id>spigot-repo</id>
             <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
         </repository>
+        <repository>
+            <id>data-local</id>
+            <name>MinigameUtil</name>
+            <url>file:///Users/liam/src/projects/minigameutil/out/artifacts/</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -78,6 +90,12 @@
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot</artifactId>
             <version>1.16.4-R0.1-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.anywhich.mc</groupId>
+            <artifactId>minigameutil</artifactId>
+            <version>0.0.2</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

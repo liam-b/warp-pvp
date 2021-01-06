@@ -9,6 +9,7 @@ import java.util.Queue;
 
 public enum CommandArgumentTypes {
     INTEGER(Integer.class, 1, "<integer>", (CommandSender sender, Queue<String> args) -> Integer.parseInt(args.poll())),
+    BOOLEAN(Boolean.class, 1, "<boolean>", (CommandSender sender, Queue<String> args) -> Boolean.parseBoolean(args.poll())),
     DECIMAL(Float.class, 1, "<decimal>", (CommandSender sender, Queue<String> args) -> Float.parseFloat(args.poll())),
     POSITION(Vector.class, 3, "<position.x> <position.y> <position.z>", (CommandSender sender, Queue<String> args) -> interpretVector(args.poll(), args.poll(), args.poll(), sender));
 

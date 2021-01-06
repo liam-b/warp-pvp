@@ -43,7 +43,7 @@ public class Command {
 
         if (!isRoot) args = removeFirstElement(args);
         boolean isOverloadedByChild = false;
-        if (args.length != 0) {
+        if (args.length != 0 && firstArgumentIsName) {
             for (Command child : children) {
                 if (child.onCommand(sender, command, alias, args)) isOverloadedByChild = true;
             }

@@ -33,6 +33,7 @@ public class Config {
         Field[] fields = this.getClass().getDeclaredFields();
         for (Field field : fields) {
             try {
+                field.setAccessible(true);
                 String path = getPath(namespace, field);
                 Object value = field.get(this);
                 if (value instanceof Config) ((Config)value).saveToConfigUnderNamespace(configFile, path);
@@ -47,6 +48,7 @@ public class Config {
         Field[] fields = this.getClass().getDeclaredFields();
         for (Field field : fields) {
             try {
+                field.setAccessible(true);
                 String path = getPath(namespace, field);
                 Object value = configFile.get(path, field.get(this));
                 if (field.get(this) instanceof Config) ((Config)field.get(this)).loadFromConfigUnderNamespace(configFile, path);

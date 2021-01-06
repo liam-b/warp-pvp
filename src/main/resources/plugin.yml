@@ -1,9 +1,12 @@
 name: WarpPvp
 version: ${project.version}
 main: com.anywhich.mc.warppvp.WarpPvp
+depend:
+  - MinigameUtil
+loadbefore:
+  - MinigameUtil
 api-version: 1.16
 commands:
   warp:
     description: Warp pvp minigame
     usage: /<command>
-    permission: warp-pvp.warp
