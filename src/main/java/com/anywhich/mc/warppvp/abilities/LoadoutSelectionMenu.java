@@ -1,6 +1,8 @@
 package com.anywhich.mc.warppvp.abilities;
 
+import com.anywhich.mc.warppvp.Lobby;
 import com.anywhich.mc.warppvp.WarpPvp;
+import com.anywhich.mc.warppvp.WarpPvpConfig;
 import com.anywhich.mc.warppvp.perks.*;
 import com.anywhich.mc.warppvp.playerdata.PlayerData;
 import org.bukkit.Bukkit;
@@ -31,14 +33,17 @@ import java.util.stream.Collectors;
 public class LoadoutSelectionMenu implements Listener {
     private final List<MenuItem> items = new ArrayList<>();
     private final Inventory inventory;
+    private final Lobby lobby;
 
-    public LoadoutSelectionMenu(Map<Player, PlayerData> playerData) {
-        WarpPvp plugin = JavaPlugin.getPlugin(WarpPvp.class);
-        plugin.getServer().getPluginManager().registerEvents(this, plugin);
+    public LoadoutSelectionMenu(Lobby lobby, Map<Player, PlayerData> playerData) {
+        this.lobby = lobby;
 
         initializeItems(playerData);
         inventory = Bukkit.createInventory(null, 27, "Loadout Selection");
         items.forEach(item -> item.addToInventory(inventory));
+
+        WarpPvp plugin = JavaPlugin.getPlugin(WarpPvp.class);
+        plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 
     public void destroy() {
@@ -59,7 +64,8 @@ public class LoadoutSelectionMenu implements Listener {
     }
 
     public void openInventory(HumanEntity entity) {
-        entity.openInventory(inventory);
+        if (lobby.isGamePlying()) entity.sendMessage("Cannot change loadout during the game!");
+        else entity.openInventory(inventory);
     }
 
     @EventHandler
@@ -72,10 +78,7 @@ public class LoadoutSelectionMenu implements Listener {
             if (clickedItem == null || clickedItem.getType() == Material.AIR) return;
             Player player = (Player) event.getWhoClicked();
             items.forEach(menuItem -> {
-                if (menuItem.getSlot() == event.getRawSlot()) {
-                    menuItem.getOnClick().accept(player);
-//                    player.playSound(player.getLocation(), Sound.ENTITY_ARROW_HIT_PLAYER, 0.8f, 1);
-                }
+                if (menuItem.getSlot() == event.getRawSlot()) menuItem.getOnClick().accept(player);
             });
         }
     }
@@ -139,13 +142,13 @@ class AbilityMenuItems {
                 addAttributeToLore(lore, "Cooldown", HopAbility.COOLDOWN / 20 + "s");
                 addAttributeToLore(lore, "Damage", round(HopAbility.DAMAGE / 2) + "♡");
                 addAttributeToLore(lore, "Warp", Math.round(HopAbility.WARP * 100) + "%");
-                addAttributeToLore(lore, "Height", round(HopAbility.VERTICAL_VELOCITY * 7.14));
+                addAttributeToLore(lore, "Height", round(HopAbility.VERTICAL_VELOCITY * HopAbility.VERTICAL_VELOCITY / 2 * 10.98));
                 break;
             case CHARGE:
                 material = Material.DIAMOND_SWORD;
 
-                lore.add("Leave a path of death");
-                lore.add("and destruction!");
+                lore.add("Plow through enemies with");
+                lore.add("a short range charge!");
                 lore.add("");
                 addAttributeToLore(lore, "Cooldown", ChargeAbility.COOLDOWN / 20 + "s");
                 addAttributeToLore(lore, "Damage", round(ChargeAbility.DAMAGE / 2) + "♡");
@@ -167,7 +170,7 @@ class AbilityMenuItems {
                 material = Material.ANVIL;
 
                 lore.add("Catch your enemies off guard");
-                lore.add("with a short range body-slam!");
+                lore.add("with a medium range body-slam!");
                 lore.add("");
                 addAttributeToLore(lore, "Cooldown", SlamAbility.COOLDOWN / 20 + "s");
                 addAttributeToLore(lore, "Damage", round(SlamAbility.DAMAGE / 2) + "♡");
@@ -177,6 +180,11 @@ class AbilityMenuItems {
         }
 
         return new MenuItem(slot, material, Abilities.COLOR + abilityName.toTitle(), lore, player -> {
+            WarpPvp plugin = JavaPlugin.getPlugin(WarpPvp.class);
+            int stat = plugin.getConfig().getInt("stats.abilities." + abilityName.toString());
+            plugin.getConfig().set("stats.abilities." + abilityName.toString(), stat + 1);
+            plugin.saveConfig();
+
             playerData.putIfAbsent(player, new PlayerData());
             playerData.get(player).selectedAbility = abilityName;
             player.sendMessage(Abilities.COLOR + abilityName.toCapital() + ChatColor.WHITE + " ability selected");
@@ -210,12 +218,13 @@ class PerkMenuItems {
                 break;
             case HOT_STREAK:
                 material = Material.LAVA_BUCKET;
-                lore.add("Gain a level of sharpness every " + HotStreakPerk.KILLS_PER_LEVEL);
+                lore.add("Gain sharpness 1 after " + HotStreakPerk.KILLS_PER_LEVEL);
                 lore.add("kills in a row.");
                 break;
             case UTILITY_EXPERT:
                 material = Material.IRON_AXE;
-                lore.add("Collect gear items " + Math.round(UtilityExpertPerk.GEAR_INTERVAL_MULTIPLIER * 100) + "% faster.");
+                lore.add("Collect gear items " + Math.round(UtilityExpertPerk.GEAR_INTERVAL_MULTIPLIER * 100) + "% faster");
+                lore.add("with " + Math.round((UtilityExpertPerk.GEAR_LIMIT_MULTIPLIER - 1) * 100) + "% larger stacks.");
                 break;
             case WARP_SPECIALIST:
                 material = Material.END_CRYSTAL;
@@ -224,6 +233,11 @@ class PerkMenuItems {
         }
 
         return new MenuItem(slot, material, Perks.COLOR + perkName.toTitle(), lore, player -> {
+            WarpPvp plugin = JavaPlugin.getPlugin(WarpPvp.class);
+            int stat = plugin.getConfig().getInt("stats.perks." + perkName.toString());
+            plugin.getConfig().set("stats.perks." + perkName.toString(), stat + 1);
+            plugin.saveConfig();
+
             playerData.putIfAbsent(player, new PlayerData());
             playerData.get(player).selectedPerk = perkName;
             player.sendMessage(Perks.COLOR + perkName.toCapital() + ChatColor.WHITE + " perk selected");

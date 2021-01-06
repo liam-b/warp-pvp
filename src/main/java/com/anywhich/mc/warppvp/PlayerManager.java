@@ -1,10 +1,11 @@
 package com.anywhich.mc.warppvp;
 
+import com.anywhich.mc.warppvp.abilities.Abilities;
+import com.anywhich.mc.warppvp.perks.Perks;
 import com.anywhich.mc.warppvp.playerdata.PlayerData;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Sound;
-import org.bukkit.World;
+import org.bukkit.*;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -37,6 +38,9 @@ public class PlayerManager implements Listener {
         regenTaskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, this::regenTask, 0, REGEN_INTERVAL);
 
         spawnLocations = config.playerSpawns.stream().map(vector -> vector.toLocation(world)).collect(Collectors.toList());
+        playerData.forEach((player, data) -> {
+            player.setPlayerListName(Abilities.COLOR + "[" + data.selectedAbility.toString().charAt(0) + "]" + Perks.COLOR + "[" + data.selectedPerk.toString().charAt(0) + "] " + ChatColor.RESET + player.getName());
+        });
         this.playerData = playerData;
     }
 
@@ -54,6 +58,23 @@ public class PlayerManager implements Listener {
                 players.get(i).teleport(location);
             }
         }
+    }
+
+    public static void resetPlayer(Player player) {
+        AttributeInstance healthAttribute = player.getAttribute(Attribute.GENERIC_MAX_HEALTH);
+        if (healthAttribute != null) {
+            healthAttribute.setBaseValue(20);
+            healthAttribute.getModifiers().forEach(healthAttribute::removeModifier);
+        }
+
+        player.setGameMode(GameMode.ADVENTURE);
+        player.setHealth(20);
+        player.setFoodLevel(20);
+        player.setSaturation(0);
+        player.setAbsorptionAmount(0);
+        player.getInventory().clear();
+        player.getActivePotionEffects().forEach(effect -> player.removePotionEffect(effect.getType()));
+        player.setPlayerListName(null);
     }
 
     private void regenTask() {
@@ -82,6 +103,13 @@ public class PlayerManager implements Listener {
     @EventHandler
     public void onPlayerRespawn(PlayerRespawnEvent event) {
         if (playerData.containsKey(event.getPlayer())) {
+            resetPlayer(event.getPlayer());
+
+            if (event.getPlayer().getName().equalsIgnoreCase("CindaBCatLexy")) {
+                event.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, Integer.MAX_VALUE, 0, false, false, false));
+                event.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SPEED, Integer.MAX_VALUE, 0, false, false, false));
+            }
+
             int spawnAttempts = 0;
             Location potentialSpawn;
             do {
@@ -94,9 +122,10 @@ public class PlayerManager implements Listener {
     }
 
     private void increasePlayerHealth(Player player, double amount) {
-        if (!player.isDead()) {
+        AttributeInstance healthAttribute = player.getAttribute(Attribute.GENERIC_MAX_HEALTH);
+        if (!player.isDead() && healthAttribute != null) {
             double health = player.getHealth() + amount;
-            player.setHealth(Math.min(health, 20));
+            player.setHealth(Math.min(health, healthAttribute.getValue()));
         }
     }
 

@@ -128,8 +128,7 @@ public class WarpEffectManager implements Listener {
     private void onPlayerJump(PlayerJumpEvent event) { // maybe use hunger?
         Player player = event.getPlayer();
         if (warpLevels.containsKey(player)) {
-            double warpLevel = warpLevels.get(player);
-            if (warpLevel != 0 && warpLevel >= JUMP_RESTRICTION_THRESHOLD) hasJumped.add(player);
+            if (warpLevels.get(player) >= JUMP_RESTRICTION_THRESHOLD) hasJumped.add(player);
         }
     }
 

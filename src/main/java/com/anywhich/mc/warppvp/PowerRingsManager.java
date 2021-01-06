@@ -2,6 +2,9 @@ package com.anywhich.mc.warppvp;
 
 import com.anywhich.mc.warppvp.playerdata.PlayerData;
 import org.bukkit.*;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeInstance;
+import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
@@ -16,7 +19,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class PowerRingsManager implements Listener {
-    public static final int RING_GENERATE_INTERVAL = 160 * 20;
+    public static final int RING_GENERATE_INTERVAL = 170 * 20;
     public static final int RING_GENERATE_VARIANCE = 25 * 20;
 
     private final WarpPvp plugin;
@@ -36,7 +39,7 @@ public class PowerRingsManager implements Listener {
         onUpdateTaskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, this::onUpdate, 0, PowerRing.UPDATE_INTERVAL);
 
         ringLocations = config.ringSpawns.stream().map(vector -> vector.toLocation(world)).collect(Collectors.toList());
-        scheduleGenerateTask();
+        if (config.doPowerRings) scheduleGenerateTask();
     }
 
     public void destroy() {
@@ -78,13 +81,15 @@ public class PowerRingsManager implements Listener {
 
 class PowerRing {
     public static final int UPDATE_INTERVAL = 10;
-    public static final int LIFETIME = 35 * (20 / UPDATE_INTERVAL);
-    public static final int PREPARE_TIME = 15 * (20 / UPDATE_INTERVAL);
+    public static final int LIFETIME = 50 * (20 / UPDATE_INTERVAL);
+    public static final int PREPARE_TIME = 20 * (20 / UPDATE_INTERVAL);
 
+    private static final double EFFECTS_GRACE_PERIOD = 0.05;
     private static final PotionEffect POTION_EFFECT = new PotionEffect(PotionEffectType.SPEED, 0, 0, false, true, true);
     private static final int POTION_DURATION_INITIAL = 3 * 20;
     private static final int POTION_DURATION_FINAL = 25 * 20 - POTION_DURATION_INITIAL;
-    private static final int ABSORPTION_HEARTS_TOTAL = 10;
+    private static final int BONUS_HEARTS_TOTAL = 5;
+    private static final int BONUS_HEARTS_MAX = 8;
 
     private static final double RADIUS = 3.5;
     private static final int NUM_PARTICLES = 60;
@@ -123,17 +128,21 @@ class PowerRing {
 
         if (age == 0) center.getWorld().strikeLightning(center);
 
-        if (age >= 0) {
-            drawParticles();
+        if (age >= 0) drawParticles();
+
+        if (age >= EFFECTS_GRACE_PERIOD * LIFETIME) {
             center.getNearbyPlayers(RADIUS).forEach(player -> {
                 if (playerData.containsKey(player)) {
                     int duration = playerEffectDurations.getOrDefault(player, POTION_DURATION_INITIAL);
-                    if (age % (LIFETIME / (POTION_DURATION_FINAL / 20)) == 0) duration += 20;
+                    if (age % ((int)(LIFETIME - EFFECTS_GRACE_PERIOD * LIFETIME) / ((POTION_DURATION_FINAL - POTION_DURATION_INITIAL) / 20)) == 0) duration += 20;
                     playerEffectDurations.put(player, duration);
 
                     player.addPotionEffect(POTION_EFFECT.withDuration(duration));
-                    if (age % (LIFETIME / ABSORPTION_HEARTS_TOTAL) == 0) {
-                        player.setAbsorptionAmount(Math.min(player.getAbsorptionAmount() + 1, ABSORPTION_HEARTS_TOTAL));
+                    if (age % ((int)(LIFETIME - EFFECTS_GRACE_PERIOD * LIFETIME) / BONUS_HEARTS_TOTAL) == 0) {
+                        AttributeInstance healthAttribute = player.getAttribute(Attribute.GENERIC_MAX_HEALTH);
+                        if (healthAttribute != null && healthAttribute.getValue() - 20 < BONUS_HEARTS_MAX) {
+                            healthAttribute.addModifier(new AttributeModifier(UUID.randomUUID(), "generic.baseHealth", 1, AttributeModifier.Operation.ADD_NUMBER));
+                        }
                     }
                 }
             });
