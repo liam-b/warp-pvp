@@ -21,6 +21,9 @@ public class Game {
     public final PowerRingsManager powerRingsManager;
 
     public final Map<Player, PlayerData> playerData;
+    public final World world;
+
+    private boolean inCountdown = true;
 
     public Game(WarpPvpConfig config, Map<Player, PlayerData> playerData, World world) {
         this.playerData = playerData.entrySet().stream().filter(entry -> !entry.getKey().isDead() && entry.getValue().isEligibleToPlay()).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)); // TODO: when this game is in it's own world, the game should be aborted unless all players in the world are eligible
@@ -39,6 +42,10 @@ public class Game {
             equipmentManager.supplyEquipment(player);
         });
         playerManager.randomlySpreadPlayers();
+        startCountdown();
+
+        WarpPvp plugin = JavaPlugin.getPlugin(WarpPvp.class);
+        plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 
     public void destroy() {
@@ -52,15 +59,33 @@ public class Game {
         playerManager.destroy();
         scoreboardManager.destroy();
         powerRingsManager.destroy();
+
+        playerData.keySet().forEach(player -> {
+            PlayerManager.resetPlayer(player);
+            player.teleport(world.getSpawnLocation());
+        });
     }
 
-    private void resetPlayer(Player player) {
-        player.setGameMode(GameMode.ADVENTURE);
-        player.setHealth(20);
-        player.setFoodLevel(20);
-        player.setSaturation(0);
-        player.getInventory().clear();
-        player.getActivePotionEffects().forEach(effect -> player.removePotionEffect(effect.getType()));
-        player.setAbsorptionAmount(0);
+    private void startCountdown() {
+        queueTitles(() -> {
+            inCountdown = false;
+            playerData.forEach((player, data) -> abilitiesManager.resetPlayerCooldown(player, abilitiesManager.abilities.get(data.selectedAbility).cooldown));
+        }, "5", "4", "3", "2", "1", "Start!");
+    }
+
+    private void queueTitles(Runnable onFinish, String ... titles) {
+        WarpPvp plugin = JavaPlugin.getPlugin(WarpPvp.class);
+        for (int i = 0; i < titles.length; i++) {
+            String countdownNumber = titles[i];
+            Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> playerData.keySet().forEach(player -> player.sendTitle(countdownNumber, "", 2, 16, 2)), i * 20L);
+        }
+
+        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, onFinish, (titles.length - 1) * 20L);
+    }
+
+    @EventHandler
+    public void onPlayerMove(PlayerMoveEvent event) {
+        Location from = event.getFrom();
+        if (inCountdown) event.getTo().set(from.getX(), from.getY(), from.getZ());
     }
 }

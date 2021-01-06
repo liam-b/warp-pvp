@@ -13,7 +13,7 @@ import java.util.Map;
 public class AbilitiesManager {
     private final Map<Player, PlayerData> playerData;
     private final Map<Player, AbilityCooldown> playerCooldowns = new HashMap<>();
-    private final Map<Abilities, Ability> abilities = new HashMap<>();
+    public final Map<Abilities, Ability> abilities = new HashMap<>();
     private final int onTickTaskId;
 
     public AbilitiesManager(WarpEffectManager warpEffectManager, Map<Player, PlayerData> playerData) {
@@ -26,7 +26,6 @@ public class AbilitiesManager {
         abilities.put(Abilities.BLAST, new BlastAbility(this, warpEffectManager));
 
         this.playerData = playerData;
-        playerData.forEach((player, data) -> resetPlayerCooldown(player, abilities.get(data.selectedAbility).cooldown));
     }
 
     public void destroy() {
@@ -48,6 +47,7 @@ public class AbilitiesManager {
     }
 
     public boolean isPlayerAbilityReady(Player player) {
+        if (!playerCooldowns.containsKey(player)) return false;
         return playerCooldowns.get(player).getPercentage() == 0;
     }
 
