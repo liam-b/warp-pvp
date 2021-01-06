@@ -115,7 +115,7 @@ public class EquipmentManager implements Listener {
         allItems.putAll(gearItems);
         for (int slot : allItems.keySet()) {
             ItemStack item = inventory.getItem(slot);
-            if (item == null || item.getType() != allItems.get(slot).getType()) {
+            if (item == null || !item.isSimilar(allItems.get(slot))) {
                 inventory.setItem(slot, allItems.get(slot));
             }
         }

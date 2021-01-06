@@ -2,6 +2,7 @@ package com.anywhich.mc.warppvp.gear;
 
 import com.anywhich.mc.warppvp.WarpEffectManager;
 import com.anywhich.mc.warppvp.WarpPvp;
+import com.anywhich.mc.warppvp.perks.HotStreakPerk;
 import com.anywhich.mc.warppvp.perks.Perks;
 import com.anywhich.mc.warppvp.perks.UtilityExpertPerk;
 import com.anywhich.mc.warppvp.playerdata.PlayerData;
@@ -73,6 +74,8 @@ public abstract class Gear implements Listener {
     }
 
     void mergeItemIntoInventory(Player player, ItemStack newItem, int slot, int maxAmount) {
+        if (playerData.get(player).selectedPerk == Perks.UTILITY_EXPERT) maxAmount *= UtilityExpertPerk.GEAR_LIMIT_MULTIPLIER;
+
         ItemStack existingItem = player.getInventory().getItem(slot);
         int newAmount = newItem.getAmount();
         if (existingItem != null && existingItem.getType() == newItem.getType()) newAmount = Math.min(existingItem.getAmount() + newAmount, maxAmount);
