@@ -56,16 +56,16 @@ public class HotStreakPerk extends Perk {
                         if (swordMeta.getEnchantLevel(Enchantment.DAMAGE_ALL) != 1) {
                             swordMeta.addEnchant(Enchantment.DAMAGE_ALL, 1, false);
                             setItemAttackDamage(swordMeta, 5);
-                            sendPerkActionbar(killer, "Added level of sharpness");
+                            sendPerkActionbar(killer, "Added sharpness");
                         }
                         break;
-                    case 2:
-                        if (swordMeta.getEnchantLevel(Enchantment.DAMAGE_ALL) != 2) {
-                            swordMeta.addEnchant(Enchantment.DAMAGE_ALL, 2, false);
-                            setItemAttackDamage(swordMeta, 4);
-                            sendPerkActionbar(killer, "Added level of sharpness");
-                        }
-                        break;
+//                    case 2:
+//                        if (swordMeta.getEnchantLevel(Enchantment.DAMAGE_ALL) != 2) {
+//                            swordMeta.addEnchant(Enchantment.DAMAGE_ALL, 2, false);
+//                            setItemAttackDamage(swordMeta, 4);
+//                            sendPerkActionbar(killer, "Added level of sharpness");
+//                        }
+//                        break;
                 }
 
                 swordItem.setItemMeta(swordMeta);
