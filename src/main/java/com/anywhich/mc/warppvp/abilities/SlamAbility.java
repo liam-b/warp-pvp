@@ -1,6 +1,7 @@
 package com.anywhich.mc.warppvp.abilities;
 
 import com.anywhich.mc.warppvp.WarpEffectManager;
+import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.EntityType;
@@ -48,7 +49,7 @@ public class SlamAbility extends Ability {
     protected void onTick() {
         List<Player> toRemove = new ArrayList<>();
         pendingExplosionOnLanding.forEach(player -> {
-            if (player.isOnGround() && player.getVelocity().getY() <= Double.MIN_NORMAL && player.getVelocity().length() <= IMPACT_VELOCITY_MIN) {
+            if (((player.isOnGround() && player.getVelocity().getY() <= Double.MIN_NORMAL) || player.isInWater() || player.getLocation().getBlock().getType() == Material.VINE) && player.getVelocity().length() <= IMPACT_VELOCITY_MIN) {
                 if (!pendingLeaveGround.contains(player)) {
                     impactSignature.createExplosion(player, warpEffectManager, 200);
                     pendingExplosionOnLanding.remove(player);

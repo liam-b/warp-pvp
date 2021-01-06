@@ -10,7 +10,7 @@ public class BlastAbility extends Ability {
     public static final Abilities NAME = Abilities.BLAST;
     public static final int COOLDOWN = 20 * 10;
 
-    public static final double RANGE = 4.1;
+    public static final double RANGE = 3.9;
     public static final double KNOCKBACK = 2.1;
     public static final double KNOCKBACK_ANGLE = 0.35;
     public static final double WARP = 0.6;

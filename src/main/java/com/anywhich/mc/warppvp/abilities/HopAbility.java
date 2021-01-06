@@ -15,14 +15,14 @@ public class HopAbility extends Ability {
     public static final Abilities NAME = Abilities.HOP;
     public static final int COOLDOWN = 20 * 7;
 
-    public static final double RANGE = 2.8;
+    public static final double RANGE = 2.6;
     public static final double KNOCKBACK = 0.7;
     public static final double KNOCKBACK_ANGLE = 0.8;
-    public static final double WARP = 0.4;
+    public static final double WARP = 0.35;
     public static final double DAMAGE = 3;
     private static final ImpactSignature impactSignature = new ImpactSignature(RANGE, KNOCKBACK, KNOCKBACK_ANGLE, WARP, DAMAGE);
 
-    public static final double VERTICAL_VELOCITY = 1.4;
+    public static final double VERTICAL_VELOCITY = 1.45;
     public static final int SLOW_FALL_DURATION = 80; // could make it so that this is only removed when ground is touched
 
     private final Set<Player> hoppingPlayers = new HashSet<>();

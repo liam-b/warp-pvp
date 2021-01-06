@@ -17,8 +17,8 @@ public class ChargeAbility extends Ability {
     public static final Abilities NAME = Abilities.CHARGE;
     public static final int COOLDOWN = 20 * 6;
 
-    public static final double CHARGE_SPEED = 0.5;
-    public static final double SELECTION_RANGE = 9;
+    public static final double CHARGE_SPEED = 0.45;
+    public static final double SELECTION_RANGE = 8;
 
     public static final int DESTINATION_DISABLE_TIMEOUT = 25;
     public static final double DESTINATION_DISABLE_RANGE = 1;

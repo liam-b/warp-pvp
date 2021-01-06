@@ -4,6 +4,7 @@ import com.anywhich.mc.warppvp.WarpEffectManager;
 import com.anywhich.mc.warppvp.playerdata.PlayerData;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.TNTPrimed;
@@ -22,14 +23,14 @@ import java.util.Map;
 import java.util.Set;
 
 public class ThrowableTnt extends Gear {
-    public static final int SUPPLY_PERIOD = 200;
+    public static final int SUPPLY_PERIOD = 220;
     public static final int SUPPLY_MAX = 3;
     public static final int COUNT_MAX = 6;
 
     public static final ItemStack ITEM = new ItemStack(Material.TNT, 1);
     public static final int ITEM_SLOT = 2;
 
-    public static final float TNT_POWER = 3.2f;
+    public static final float TNT_POWER = 2.8f;
     public static final int TNT_FUSE = 45;
     public static final double TNT_BOUNCE_VELOCITY = 0.2;
     public static final double KILL_REGISTER_RADIUS = 5;
@@ -52,6 +53,8 @@ public class ThrowableTnt extends Gear {
             tnt.setFuseTicks(TNT_FUSE);
             tnt.setSource(player);
             tntEntities.add(tnt);
+
+            player.getWorld().playSound(player.getEyeLocation(), Sound.ENTITY_TNT_PRIMED, 1f, 1f);
         }
     }
 
